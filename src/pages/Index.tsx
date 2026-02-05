@@ -4,6 +4,7 @@ import { TestimonialsSection } from "@/components/TestimonialsSection";
 import { TeamCard } from "@/components/TeamCard";
 import { Newspaper, ChevronRight, ArrowRight, Facebook, Mail, MapPin } from "lucide-react";
 import heroIllustration from "@/assets/hero-illustration.png";
+import logo from "@/assets/logo.png";
 
 type TeamType = "editorial" | "production";
 
@@ -23,7 +24,7 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 md:h-20">
             <div className="flex items-center gap-3">
-              <Newspaper className="w-7 h-7 text-accent" />
+              <img src={logo} alt="Ang Silakbo Logo" className="w-8 h-8 md:w-10 md:h-10 object-contain" />
               <span className="font-sans font-bold text-xl md:text-2xl text-foreground tracking-tight">
                 ANG SILAKBO
               </span>
@@ -115,7 +116,7 @@ const Index = () => {
             {/* Brand */}
             <div>
               <div className="flex items-center gap-3 mb-6">
-                <Newspaper className="w-7 h-7 text-accent" />
+                <img src={logo} alt="Ang Silakbo Logo" className="w-10 h-10 object-contain" />
                 <span className="font-sans font-bold text-2xl">ANG SILAKBO</span>
               </div>
               <p className="text-primary-foreground/70 leading-relaxed">
