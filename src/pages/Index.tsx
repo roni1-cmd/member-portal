@@ -3,6 +3,7 @@ import { ApplicationModal } from "@/components/ApplicationModal";
 import { TestimonialsSection } from "@/components/TestimonialsSection";
 import { TeamCard } from "@/components/TeamCard";
 import { Newspaper, ChevronRight, ArrowRight, Facebook, Mail, MapPin } from "lucide-react";
+import heroIllustration from "@/assets/hero-illustration.png";
 
 type TeamType = "editorial" | "production";
 
@@ -48,24 +49,15 @@ const Index = () => {
         {/* Hero Container */}
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
           {/* Background Illustration Area */}
-          <div className="relative rounded-3xl bg-gradient-to-br from-secondary via-secondary to-accent/10 overflow-hidden min-h-[400px] md:min-h-[500px]">
-            {/* Decorative Elements */}
-            <div className="absolute top-10 left-10 w-4 h-4 text-accent">✦</div>
-            <div className="absolute top-20 right-1/3 w-3 h-3 text-accent/50">✦</div>
-            <div className="absolute bottom-20 left-1/4 w-3 h-3 text-muted-foreground/30">✦</div>
-            
-            {/* Abstract shapes */}
-            <div className="absolute bottom-0 left-0 w-32 h-32 md:w-48 md:h-48 bg-accent/20 rounded-tr-full" />
-            <div className="absolute top-1/4 left-1/3 w-20 h-20 bg-accent/10 rounded-full blur-xl" />
-            <div className="absolute bottom-1/3 right-1/3 w-32 h-32 bg-primary/5 rounded-full blur-2xl" />
-            
-            {/* Center Content Placeholder */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-center opacity-40">
-                <Newspaper className="w-24 h-24 md:w-32 md:h-32 text-accent mx-auto mb-4" />
-                <p className="font-sans font-bold text-2xl text-accent">ANG SILAKBO</p>
-              </div>
-            </div>
+          <div className="relative rounded-3xl bg-secondary overflow-hidden min-h-[400px] md:min-h-[500px]">
+            {/* Hero Illustration */}
+            <img 
+              src={heroIllustration} 
+              alt="Student journalists with cameras and microphones"
+              className="absolute inset-0 w-full h-full object-cover object-center"
+            />
+            {/* Subtle overlay for better text contrast */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-background/30" />
             
             {/* Floating Card */}
             <div className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 w-[90%] sm:w-[350px] md:w-[400px] bg-card rounded-2xl shadow-2xl p-6 md:p-8 animate-slide-up">
