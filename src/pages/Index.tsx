@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ApplicationModal } from "@/components/ApplicationModal";
 import { TestimonialsSection } from "@/components/TestimonialsSection";
 import { TeamCard } from "@/components/TeamCard";
-import { Newspaper, ChevronRight, Facebook, Mail, MapPin } from "lucide-react";
+import { Newspaper, ChevronRight, ArrowRight, Facebook, Mail, MapPin } from "lucide-react";
 
 type TeamType = "editorial" | "production";
 
@@ -18,79 +18,72 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-40 bg-background/80 backdrop-blur-md border-b border-border">
+      <nav className="fixed top-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 md:h-20">
             <div className="flex items-center gap-3">
-              <Newspaper className="w-8 h-8 text-accent" />
-              <span className="font-display text-xl md:text-2xl text-foreground tracking-tight">
+              <Newspaper className="w-7 h-7 text-accent" />
+              <span className="font-sans font-bold text-xl md:text-2xl text-foreground tracking-tight">
                 ANG SILAKBO
               </span>
             </div>
             <div className="hidden md:flex items-center gap-8">
-              <a href="#home" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Home</a>
+              <a href="#home" className="text-sm font-medium text-foreground hover:text-accent transition-colors border-b-2 border-accent pb-1">Home</a>
               <a href="#positions" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Positions</a>
               <a href="#testimonials" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Testimonials</a>
               <a href="#contact" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Contact</a>
             </div>
             <button
               onClick={() => openModal("editorial")}
-              className="btn-accent text-sm py-2.5 px-5"
+              className="bg-accent text-accent-foreground font-semibold text-sm py-2.5 px-6 rounded-full hover:bg-accent/90 transition-all"
             >
-              Join Now
+              Subscribe
             </button>
           </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section id="home" className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
-        {/* Background Elements */}
-        <div className="absolute inset-0 bg-gradient-to-b from-secondary/50 to-background" />
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
-        
-        {/* Content */}
-        <div className="relative z-10 max-w-5xl mx-auto px-4 text-center py-20">
-          <span className="inline-block px-5 py-2 bg-accent/10 text-accent font-semibold text-sm rounded-full mb-8 animate-fade-in">
-            ✨ Now Accepting Applications for A.Y. 2025-2026
-          </span>
-          
-          <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-foreground mb-8 leading-tight animate-slide-up">
-            Shape the Future<br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-gold-light">
-              of Media
-            </span>
-          </h1>
-          
-          <p className="font-serif text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed animate-slide-up" style={{ animationDelay: "0.1s" }}>
-            Join Ang Silakbo and be part of a passionate community dedicated to delivering 
-            impactful journalism and creative content that matters to our community. 
-            <span className="text-foreground font-medium"> Your voice, your story, your impact.</span>
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up" style={{ animationDelay: "0.2s" }}>
-            <button
-              onClick={() => {
-                document.getElementById('positions')?.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="btn-accent text-lg px-8 py-4 flex items-center gap-2"
-            >
-              Join Our Team
-              <ChevronRight className="w-5 h-5" />
-            </button>
-            <a
-              href="#testimonials"
-              className="px-8 py-4 rounded-xl font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-all"
-            >
-              Read Testimonials
-            </a>
-          </div>
-
-          {/* Scroll Indicator */}
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-            <div className="w-6 h-10 rounded-full border-2 border-muted-foreground/30 flex items-start justify-center p-2">
-              <div className="w-1.5 h-3 rounded-full bg-accent animate-pulse" />
+      <section id="home" className="relative pt-20 overflow-hidden">
+        {/* Hero Container */}
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+          {/* Background Illustration Area */}
+          <div className="relative rounded-3xl bg-gradient-to-br from-secondary via-secondary to-accent/10 overflow-hidden min-h-[400px] md:min-h-[500px]">
+            {/* Decorative Elements */}
+            <div className="absolute top-10 left-10 w-4 h-4 text-accent">✦</div>
+            <div className="absolute top-20 right-1/3 w-3 h-3 text-accent/50">✦</div>
+            <div className="absolute bottom-20 left-1/4 w-3 h-3 text-muted-foreground/30">✦</div>
+            
+            {/* Abstract shapes */}
+            <div className="absolute bottom-0 left-0 w-32 h-32 md:w-48 md:h-48 bg-accent/20 rounded-tr-full" />
+            <div className="absolute top-1/4 left-1/3 w-20 h-20 bg-accent/10 rounded-full blur-xl" />
+            <div className="absolute bottom-1/3 right-1/3 w-32 h-32 bg-primary/5 rounded-full blur-2xl" />
+            
+            {/* Center Content Placeholder */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="text-center opacity-40">
+                <Newspaper className="w-24 h-24 md:w-32 md:h-32 text-accent mx-auto mb-4" />
+                <p className="font-sans font-bold text-2xl text-accent">ANG SILAKBO</p>
+              </div>
+            </div>
+            
+            {/* Floating Card */}
+            <div className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 w-[90%] sm:w-[350px] md:w-[400px] bg-card rounded-2xl shadow-2xl p-6 md:p-8 animate-slide-up">
+              <span className="text-accent font-semibold text-sm uppercase tracking-wide">
+                NOW ACCEPTING
+              </span>
+              <h1 className="font-display text-2xl md:text-3xl lg:text-4xl text-foreground mt-3 mb-4 leading-tight">
+                Applications for A.Y. 2025-2026 are now open
+              </h1>
+              <p className="text-muted-foreground text-sm md:text-base leading-relaxed mb-6">
+                Join Ang Silakbo and be part of a passionate community dedicated to delivering impactful journalism.
+              </p>
+              <button
+                onClick={() => document.getElementById('positions')?.scrollIntoView({ behavior: 'smooth' })}
+                className="flex items-center gap-2 text-foreground font-medium hover:text-accent transition-colors group"
+              >
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </button>
             </div>
           </div>
         </div>
@@ -101,20 +94,17 @@ const Index = () => {
         <div className="max-w-6xl mx-auto">
           {/* Section Header */}
           <div className="text-center mb-16">
-            <span className="inline-block px-4 py-1.5 bg-accent/10 text-accent font-medium text-sm rounded-full mb-4">
-              Open Positions
-            </span>
-            <h2 className="font-display text-3xl md:text-4xl lg:text-5xl text-foreground mb-4">
+            <h2 className="font-display text-3xl md:text-4xl lg:text-5xl text-foreground mb-6">
               Join Our Team
             </h2>
-            <p className="text-muted-foreground font-serif text-lg max-w-2xl mx-auto">
+            <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
               Choose between our creative writing team or dynamic production team to showcase 
               your talents and make a lasting impact in student journalism.
             </p>
           </div>
 
           {/* Team Cards */}
-          <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
+          <div className="space-y-8">
             <TeamCard type="editorial" onApply={() => openModal("editorial")} />
             <TeamCard type="production" onApply={() => openModal("production")} />
           </div>
@@ -133,10 +123,10 @@ const Index = () => {
             {/* Brand */}
             <div>
               <div className="flex items-center gap-3 mb-6">
-                <Newspaper className="w-8 h-8 text-accent" />
-                <span className="font-display text-2xl">ANG SILAKBO</span>
+                <Newspaper className="w-7 h-7 text-accent" />
+                <span className="font-sans font-bold text-2xl">ANG SILAKBO</span>
               </div>
-              <p className="text-primary-foreground/70 font-serif leading-relaxed">
+              <p className="text-primary-foreground/70 leading-relaxed">
                 Shaping the future of media through passionate journalism and creative 
                 storytelling. Join us in making a difference, one story at a time.
               </p>
