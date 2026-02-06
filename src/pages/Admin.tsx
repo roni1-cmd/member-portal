@@ -1,8 +1,14 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Lock, User, Briefcase, Mail, Phone, MapPin, FileText, Calendar, ExternalLink, ArrowLeft } from "lucide-react";
+import { Lock, Mail, Phone, MapPin, Calendar, ExternalLink, ArrowLeft, Grid3X3, List, Briefcase, MoreVertical } from "lucide-react";
 import { Link } from "react-router-dom";
 import logo from "@/assets/logo.png";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface Application {
   id: string;
@@ -19,7 +25,29 @@ interface Application {
   created_at: string;
 }
 
-const ADMIN_PASSWORD = "silakbo2025"; // Simple password protection
+const ADMIN_PASSWORD = "silakbo2025";
+
+// Position-based gradient colors
+const positionGradients: Record<string, string> = {
+  "Feature News Writer": "from-sky-400 to-sky-600",
+  "Editorial Writer": "from-teal-400 to-teal-600",
+  "Local News Writer": "from-emerald-400 to-emerald-600",
+  "Sports News Writer": "from-orange-400 to-orange-600",
+  "Layout Artist": "from-purple-400 to-purple-600",
+  "Photojournalist": "from-pink-400 to-pink-600",
+  "Video Journalist": "from-rose-400 to-rose-600",
+  "Video Editor": "from-indigo-400 to-indigo-600",
+  "Broadcaster": "from-amber-400 to-amber-600",
+};
+
+const getGradient = (position: string) => {
+  return positionGradients[position] || "from-accent to-accent/80";
+};
+
+// DiceBear avatar URL generator (using initials style)
+const getAvatarUrl = (name: string) => {
+  return `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(name)}&backgroundColor=ffffff&textColor=374151&fontSize=40`;
+};
 
 export default function Admin() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -28,6 +56,7 @@ export default function Admin() {
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,6 +111,13 @@ export default function Admin() {
     });
   };
 
+  const formatShortDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    });
+  };
+
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
@@ -126,21 +162,46 @@ export default function Admin() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-secondary/30">
       {/* Header */}
-      <header className="bg-primary text-primary-foreground py-4 px-4 sticky top-0 z-40">
+      <header className="bg-card border-b border-border py-4 px-4 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img src={logo} alt="Ang Silakbo Logo" className="w-8 h-8 object-contain" />
-            <span className="font-sans font-bold text-xl">Admin Panel</span>
+            <span className="font-sans font-bold text-xl text-foreground">Admin Panel</span>
           </div>
           <div className="flex items-center gap-4">
-            <Link to="/" className="text-primary-foreground/70 hover:text-primary-foreground text-sm transition-colors">
+            {/* View Toggle */}
+            <div className="flex items-center bg-secondary rounded-lg p-1">
+              <button
+                onClick={() => setViewMode("grid")}
+                className={`p-2 rounded-md transition-all ${
+                  viewMode === "grid" 
+                    ? "bg-card text-foreground shadow-sm" 
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+                title="Grid view"
+              >
+                <Grid3X3 className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setViewMode("list")}
+                className={`p-2 rounded-md transition-all ${
+                  viewMode === "list" 
+                    ? "bg-card text-foreground shadow-sm" 
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+                title="List view"
+              >
+                <List className="w-4 h-4" />
+              </button>
+            </div>
+            <Link to="/" className="text-muted-foreground hover:text-foreground text-sm transition-colors">
               View Site
             </Link>
             <button
               onClick={handleLogout}
-              className="text-sm bg-primary-foreground/10 hover:bg-primary-foreground/20 px-4 py-2 rounded-lg transition-colors"
+              className="text-sm bg-secondary hover:bg-secondary/80 px-4 py-2 rounded-lg transition-colors"
             >
               Logout
             </button>
@@ -164,49 +225,91 @@ export default function Admin() {
           </div>
         ) : applications.length === 0 ? (
           <div className="text-center py-20 bg-card rounded-2xl border border-border">
-            <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+            <Briefcase className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
             <h3 className="font-display text-xl text-foreground mb-2">No Applications Yet</h3>
             <p className="text-muted-foreground">Applications will appear here once submitted.</p>
           </div>
-        ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        ) : viewMode === "grid" ? (
+          /* Grid View */
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {applications.map((app) => (
               <div
                 key={app.id}
-                className="bg-card rounded-2xl border border-border overflow-hidden hover:shadow-lg transition-all cursor-pointer"
+                className="bg-card rounded-xl overflow-hidden hover:shadow-lg transition-all cursor-pointer group border border-border"
                 onClick={() => setSelectedApplication(app)}
               >
-                {/* Card Header */}
-                <div className="bg-secondary/50 p-4 border-b border-border">
-                  <span className="text-xs font-semibold text-accent uppercase tracking-wider">
+                {/* Gradient Header */}
+                <div className={`relative h-32 bg-gradient-to-br ${getGradient(app.position)} p-4`}>
+                  <h3 className="font-semibold text-white text-lg leading-tight line-clamp-2">
                     {app.position}
-                  </span>
-                  <h3 className="font-display text-xl text-foreground mt-1">{app.full_name}</h3>
-                  <p className="text-sm text-muted-foreground">{app.section}</p>
-                </div>
-
-                {/* Card Body */}
-                <div className="p-4 space-y-3">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Mail className="w-4 h-4" />
-                    <span className="truncate">{app.email}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Phone className="w-4 h-4" />
-                    <span>{app.phone_number}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Calendar className="w-4 h-4" />
-                    <span>{formatDate(app.created_at)}</span>
+                  </h3>
+                  <p className="text-white/90 text-sm mt-1">{app.section}</p>
+                  <p className="text-white/80 text-sm">{app.full_name}</p>
+                  
+                  {/* Avatar */}
+                  <div className="absolute bottom-4 right-4">
+                    <img
+                      src={getAvatarUrl(app.full_name)}
+                      alt={app.full_name}
+                      className="w-16 h-16 rounded-full border-4 border-white/30 bg-white shadow-lg"
+                    />
                   </div>
                 </div>
 
                 {/* Card Footer */}
-                <div className="px-4 pb-4">
-                  <button className="text-accent text-sm font-medium hover:underline">
-                    View Details →
-                  </button>
+                <div className="p-4 flex items-center justify-between">
+                  <span className="text-xs text-muted-foreground">
+                    {formatShortDate(app.created_at)}
+                  </span>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                      <button className="p-1 hover:bg-secondary rounded-full transition-colors">
+                        <MoreVertical className="w-5 h-5 text-muted-foreground" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={() => setSelectedApplication(app)}>
+                        View Details
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => window.open(`mailto:${app.email}`)}>
+                        Send Email
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          /* List View */
+          <div className="bg-card rounded-xl border border-border overflow-hidden">
+            <div className="grid grid-cols-[auto_1fr_1fr_1fr_auto] gap-4 p-4 bg-secondary/50 border-b border-border text-sm font-medium text-muted-foreground">
+              <span className="w-10"></span>
+              <span>Applicant</span>
+              <span>Position</span>
+              <span>Section</span>
+              <span>Date</span>
+            </div>
+            {applications.map((app) => (
+              <div
+                key={app.id}
+                className="grid grid-cols-[auto_1fr_1fr_1fr_auto] gap-4 p-4 border-b border-border last:border-0 hover:bg-secondary/30 cursor-pointer transition-colors items-center"
+                onClick={() => setSelectedApplication(app)}
+              >
+                <img
+                  src={getAvatarUrl(app.full_name)}
+                  alt={app.full_name}
+                  className="w-10 h-10 rounded-full bg-secondary"
+                />
+                <div>
+                  <p className="font-medium text-foreground">{app.full_name}</p>
+                  <p className="text-sm text-muted-foreground">{app.email}</p>
+                </div>
+                <span className={`text-sm font-medium px-3 py-1 rounded-full w-fit bg-gradient-to-r ${getGradient(app.position)} text-white`}>
+                  {app.position}
+                </span>
+                <span className="text-sm text-muted-foreground">{app.section}</span>
+                <span className="text-sm text-muted-foreground">{formatShortDate(app.created_at)}</span>
               </div>
             ))}
           </div>
@@ -217,27 +320,34 @@ export default function Admin() {
       {selectedApplication && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
-            className="absolute inset-0 bg-primary/80 backdrop-blur-sm"
+            className="absolute inset-0 bg-foreground/50 backdrop-blur-sm"
             onClick={() => setSelectedApplication(null)}
           />
           <div className="relative bg-card rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
-            {/* Modal Header */}
-            <div className="sticky top-0 bg-card border-b border-border p-6 flex items-start justify-between">
-              <div>
-                <span className="text-xs font-semibold text-accent uppercase tracking-wider">
-                  {selectedApplication.position}
-                </span>
-                <h2 className="font-display text-2xl text-foreground mt-1">
-                  {selectedApplication.full_name}
-                </h2>
-                <p className="text-muted-foreground">{selectedApplication.section}</p>
-              </div>
+            {/* Modal Header with Gradient */}
+            <div className={`relative bg-gradient-to-br ${getGradient(selectedApplication.position)} p-6 text-white`}>
               <button
                 onClick={() => setSelectedApplication(null)}
-                className="p-2 hover:bg-secondary rounded-lg transition-colors"
+                className="absolute top-4 right-4 p-2 hover:bg-white/20 rounded-lg transition-colors"
               >
                 <ArrowLeft className="w-5 h-5" />
               </button>
+              <div className="flex items-end gap-4">
+                <img
+                  src={getAvatarUrl(selectedApplication.full_name)}
+                  alt={selectedApplication.full_name}
+                  className="w-20 h-20 rounded-full border-4 border-white/30 bg-white shadow-lg"
+                />
+                <div>
+                  <span className="text-sm font-medium text-white/80 uppercase tracking-wider">
+                    {selectedApplication.position}
+                  </span>
+                  <h2 className="font-display text-2xl mt-1">
+                    {selectedApplication.full_name}
+                  </h2>
+                  <p className="text-white/80">{selectedApplication.section}</p>
+                </div>
+              </div>
             </div>
 
             {/* Modal Body */}
