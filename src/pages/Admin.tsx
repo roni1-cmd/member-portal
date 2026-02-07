@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Lock, Mail, Phone, MapPin, ExternalLink, ArrowLeft, Grid3X3, List, Briefcase, MoreVertical, Home, Users, Settings, LogOut, Menu } from "lucide-react";
+import { Mail, Phone, MapPin, ExternalLink, ArrowLeft, Grid3X3, List, Briefcase, MoreVertical, Home, Users, Settings, Menu, Archive, CalendarDays } from "lucide-react";
 import { Link } from "react-router-dom";
 import logo from "@/assets/logo.png";
 import {
@@ -37,8 +37,6 @@ interface Application {
   created_at: string;
 }
 
-const ADMIN_PASSWORD = "silakbo2025";
-
 // Position-based gradient colors
 const positionGradients: Record<string, string> = {
   "Feature News Writer": "from-sky-400 to-sky-600",
@@ -61,45 +59,25 @@ const getAvatarUrl = (name: string) => {
   return `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(name)}`;
 };
 
-// Sidebar navigation items
-const sidebarItems = [
-  { title: "Home", icon: Home, href: "/" },
-  { title: "Applications", icon: Users, active: true },
-  { title: "Settings", icon: Settings },
-];
+// Get initial letter with a color
+const getInitialColor = (name: string) => {
+  const colors = [
+    "bg-blue-600", "bg-green-600", "bg-purple-600", "bg-red-600",
+    "bg-amber-600", "bg-teal-600", "bg-pink-600", "bg-indigo-600",
+  ];
+  const index = name.charCodeAt(0) % colors.length;
+  return colors[index];
+};
 
 export default function Admin() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (password === ADMIN_PASSWORD) {
-      setIsAuthenticated(true);
-      setError("");
-      localStorage.setItem("admin_auth", "true");
-    } else {
-      setError("Incorrect password");
-    }
-  };
-
   useEffect(() => {
-    const auth = localStorage.getItem("admin_auth");
-    if (auth === "true") {
-      setIsAuthenticated(true);
-    }
+    fetchApplications();
   }, []);
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      fetchApplications();
-    }
-  }, [isAuthenticated]);
 
   const fetchApplications = async () => {
     setLoading(true);
@@ -112,12 +90,6 @@ export default function Admin() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("admin_auth");
-    setIsAuthenticated(false);
-    setPassword("");
   };
 
   const formatDate = (dateString: string) => {
@@ -137,99 +109,92 @@ export default function Admin() {
     });
   };
 
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <div className="w-full max-w-md">
-          <div className="text-center mb-8">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <img src={logo} alt="Ang Silakbo Logo" className="w-12 h-12 object-contain" />
-              <span className="font-sans font-bold text-2xl text-foreground">ANG SILAKBO</span>
-            </div>
-            <h1 className="font-display text-3xl text-foreground mb-2">Admin Panel</h1>
-            <p className="text-muted-foreground">Enter the password to view applications</p>
-          </div>
-
-          <form onSubmit={handleLogin} className="bg-card rounded-2xl p-8 shadow-lg border border-border">
-            <div className="mb-6">
-              <label className="block text-sm font-medium mb-2">Password</label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="input-editorial w-full pl-10"
-                  placeholder="Enter admin password"
-                />
-              </div>
-              {error && <p className="text-destructive text-sm mt-2">{error}</p>}
-            </div>
-            <button type="submit" className="btn-accent w-full">
-              Access Panel
-            </button>
-          </form>
-
-          <div className="text-center mt-6">
-            <Link to="/" className="text-muted-foreground hover:text-accent transition-colors text-sm">
-              ← Back to Homepage
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // Group applications by position for sidebar
+  const applicationsByPosition = applications.reduce((acc, app) => {
+    if (!acc[app.position]) acc[app.position] = [];
+    acc[app.position].push(app);
+    return acc;
+  }, {} as Record<string, Application[]>);
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-secondary/30">
-        {/* Sidebar */}
+      <div className="min-h-screen flex w-full bg-background">
+        {/* Google Classroom-style Sidebar */}
         <Sidebar className="border-r border-border bg-card">
-          <div className="p-4 border-b border-border">
-            <div className="flex items-center gap-3">
-              <img src={logo} alt="Ang Silakbo Logo" className="w-8 h-8 object-contain" />
-              <span className="font-sans font-bold text-lg text-foreground">Ang Silakbo</span>
-            </div>
-          </div>
-          <SidebarContent>
+          <SidebarContent className="py-2">
+            {/* Main Navigation */}
             <SidebarGroup>
               <SidebarGroupContent>
                 <SidebarMenu>
-                  {sidebarItems.map((item) => (
-                    <SidebarMenuItem key={item.title}>
-                      <SidebarMenuButton
-                        asChild={!!item.href}
-                        className={item.active ? "bg-accent/10 text-accent font-medium" : "text-muted-foreground hover:text-foreground hover:bg-secondary"}
-                      >
-                        {item.href ? (
-                          <Link to={item.href}>
-                            <item.icon className="w-5 h-5 mr-3" />
-                            <span>{item.title}</span>
-                          </Link>
-                        ) : (
-                          <button className="w-full flex items-center">
-                            <item.icon className="w-5 h-5 mr-3" />
-                            <span>{item.title}</span>
-                          </button>
-                        )}
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild className="h-12 px-6 rounded-r-full rounded-l-none bg-accent/10 text-accent font-medium hover:bg-accent/15">
+                      <Link to="/">
+                        <Home className="w-5 h-5 mr-4" />
+                        <span>Home</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton className="h-12 px-6 rounded-r-full rounded-l-none text-muted-foreground hover:bg-secondary hover:text-foreground">
+                      <CalendarDays className="w-5 h-5 mr-4" />
+                      <span>Calendar</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+
+            {/* Divider */}
+            <div className="mx-4 my-2 h-px bg-border" />
+
+            {/* Applications Group */}
+            <SidebarGroup>
+              <SidebarGroupLabel className="px-6 text-xs font-medium text-muted-foreground uppercase tracking-wider flex items-center justify-between">
+                Applications
+                <span className="text-accent text-xs">{applications.length}</span>
+              </SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {Object.entries(applicationsByPosition).map(([position, apps]) => (
+                    <SidebarMenuItem key={position}>
+                      <SidebarMenuButton className="h-14 px-6 rounded-r-full rounded-l-none text-foreground hover:bg-secondary group">
+                        <div className={`w-8 h-8 rounded-full ${getInitialColor(position)} text-white flex items-center justify-center text-sm font-bold shrink-0`}>
+                          {position.charAt(0)}
+                        </div>
+                        <div className="ml-3 min-w-0 flex-1">
+                          <p className="text-sm font-medium truncate">{position}</p>
+                          <p className="text-xs text-muted-foreground">{apps.length} applicant{apps.length !== 1 ? "s" : ""}</p>
+                        </div>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   ))}
                 </SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
+
+            {/* Divider */}
+            <div className="mx-4 my-2 h-px bg-border" />
+
+            {/* Bottom Navigation */}
+            <SidebarGroup>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton className="h-12 px-6 rounded-r-full rounded-l-none text-muted-foreground hover:bg-secondary hover:text-foreground">
+                      <Archive className="w-5 h-5 mr-4" />
+                      <span>Archived</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton className="h-12 px-6 rounded-r-full rounded-l-none text-muted-foreground hover:bg-secondary hover:text-foreground">
+                      <Settings className="w-5 h-5 mr-4" />
+                      <span>Settings</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
           </SidebarContent>
-          
-          {/* Sidebar Footer */}
-          <div className="mt-auto p-4 border-t border-border">
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-3 w-full px-3 py-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg transition-colors"
-            >
-              <LogOut className="w-5 h-5" />
-              <span>Logout</span>
-            </button>
-          </div>
         </Sidebar>
 
         {/* Main Content */}
@@ -241,7 +206,8 @@ export default function Admin() {
                 <SidebarTrigger className="p-2 hover:bg-secondary rounded-lg">
                   <Menu className="w-5 h-5" />
                 </SidebarTrigger>
-                <h1 className="font-semibold text-lg text-foreground">Applications</h1>
+                <img src={logo} alt="Ang Silakbo Logo" className="w-8 h-8 object-contain" />
+                <span className="font-sans font-bold text-xl text-foreground tracking-tight">ANG SILAKBO</span>
               </div>
               <div className="flex items-center gap-2">
                 {/* View Toggle */}
