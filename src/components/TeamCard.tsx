@@ -63,7 +63,7 @@ export function TeamTabs({ onApply }: TeamCardProps) {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`pb-3 text-sm md:text-base font-medium transition-colors relative ${
+              className={`pb-3 text-sm md:text-base font-medium transition-all relative active:scale-95 ${
                 activeTab === tab.id
                   ? "text-foreground"
                   : "text-muted-foreground hover:text-foreground"
@@ -71,18 +71,18 @@ export function TeamTabs({ onApply }: TeamCardProps) {
             >
               {tab.label}
               {activeTab === tab.id && (
-                <span className="absolute bottom-0 left-0 right-0 h-[3px] bg-accent rounded-full" />
+                <span className="absolute bottom-0 left-0 right-0 h-[3px] bg-accent rounded-full animate-[scaleX_0.3s_ease-out]" style={{ transformOrigin: 'left' }} />
               )}
             </button>
           ))}
         </div>
 
-        {/* Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        {/* Content with animation */}
+        <div key={activeTab} className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center animate-fade-in">
           {/* Visual Side */}
           <div className="relative rounded-3xl overflow-hidden bg-secondary min-h-[350px] md:min-h-[420px] flex items-center justify-center">
-            <div className="relative">
-              <div className="w-36 h-36 md:w-44 md:h-44 rounded-3xl bg-accent/20 absolute -top-4 -left-4 rotate-12" />
+            <div className="relative transition-transform duration-500 hover:scale-105">
+              <div className="w-36 h-36 md:w-44 md:h-44 rounded-3xl bg-accent/20 absolute -top-4 -left-4 rotate-12 transition-transform duration-700 hover:rotate-6" />
               <div className="w-44 h-44 md:w-52 md:h-52 rounded-3xl bg-primary/10 relative flex items-center justify-center">
                 <Icon className="w-20 h-20 md:w-24 md:h-24 text-accent/60" />
               </div>
@@ -100,10 +100,11 @@ export function TeamTabs({ onApply }: TeamCardProps) {
 
             {/* Positions */}
             <div className="flex flex-wrap gap-2 mb-8">
-              {activeData.positions.map((position) => (
+              {activeData.positions.map((position, i) => (
                 <span
                   key={position}
-                  className="text-xs font-medium text-muted-foreground bg-secondary px-3 py-1.5 rounded-full"
+                  className="text-xs font-medium text-muted-foreground bg-secondary px-3 py-1.5 rounded-full transition-all hover:bg-accent/10 hover:text-accent cursor-default animate-fade-in"
+                  style={{ animationDelay: `${i * 50}ms` }}
                 >
                   {position}
                 </span>
@@ -112,7 +113,7 @@ export function TeamTabs({ onApply }: TeamCardProps) {
 
             <button
               onClick={() => onApply(activeTab)}
-              className="inline-flex items-center gap-2 text-accent font-medium hover:underline transition-colors group"
+              className="inline-flex items-center gap-2 text-accent font-medium hover:underline transition-all group active:scale-95"
             >
               Apply for {activeData.label}
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ApplicationModal } from "@/components/ApplicationModal";
 import { TestimonialsSection } from "@/components/TestimonialsSection";
 import { TeamTabs } from "@/components/TeamCard";
-import { ArrowDown, Facebook, Mail, MapPin } from "lucide-react";
+import { ArrowDown, Facebook, Mail } from "lucide-react";
 import logo from "@/assets/logo.png";
 
 type TeamType = "editorial" | "production";
@@ -36,7 +36,7 @@ const Index = () => {
             </div>
             <button
               onClick={() => openModal("editorial")}
-              className="bg-accent text-accent-foreground font-semibold text-sm py-2.5 px-6 rounded-full hover:bg-accent/90 transition-all"
+              className="bg-accent text-accent-foreground font-semibold text-sm py-2.5 px-6 rounded-full hover:bg-accent/90 transition-all active:scale-95"
             >
               Subscribe
             </button>
@@ -44,10 +44,9 @@ const Index = () => {
         </div>
       </nav>
 
-      {/* Hero Section - Clean centered text like Google for Education */}
+      {/* Hero Section */}
       <section id="home" className="pt-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 text-center">
-          {/* Brand Logo + Name */}
           <div className="flex items-center justify-center gap-3 mb-10">
             <img src={logo} alt="Ang Silakbo Logo" className="w-8 h-8 object-contain" />
             <span className="font-sans font-bold text-lg text-foreground tracking-tight">
@@ -55,22 +54,19 @@ const Index = () => {
             </span>
           </div>
 
-          {/* Large Hero Heading */}
           <h1 className="font-display text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-foreground leading-tight mb-6 animate-slide-up">
             Amplifying Voices.
             <br />
             Empowering Stories.
           </h1>
 
-          {/* Subtitle */}
           <p className="text-muted-foreground text-base md:text-lg lg:text-xl max-w-2xl mx-auto leading-relaxed mb-10 animate-slide-up" style={{ animationDelay: "100ms" }}>
             We provide students with a platform to develop their journalism skills, create meaningful stories, and make a lasting impact on our campus community.
           </p>
 
-          {/* CTA Link */}
           <button
             onClick={() => document.getElementById('positions')?.scrollIntoView({ behavior: 'smooth' })}
-            className="inline-flex flex-col items-center gap-2 text-accent font-medium hover:underline transition-colors animate-slide-up"
+            className="inline-flex flex-col items-center gap-2 text-accent font-medium hover:underline transition-all animate-slide-up active:scale-95"
             style={{ animationDelay: "200ms" }}
           >
             <span>Apply for A.Y. 2025-2026</span>
@@ -79,7 +75,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Positions Section - Tabbed layout */}
+      {/* Positions Section */}
       <TeamTabs onApply={openModal} />
 
       {/* Testimonials Section */}
@@ -87,69 +83,51 @@ const Index = () => {
         <TestimonialsSection />
       </div>
 
-      {/* Footer */}
-      <footer id="contact" className="bg-primary text-primary-foreground py-16 md:py-20">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="grid md:grid-cols-3 gap-12 md:gap-8">
-            {/* Brand */}
-            <div>
-              <div className="flex items-center gap-3 mb-6">
-                <img src={logo} alt="Ang Silakbo Logo" className="w-10 h-10 object-contain" />
-                <span className="font-sans font-bold text-2xl">ANG SILAKBO</span>
-              </div>
-              <p className="text-primary-foreground/70 leading-relaxed">
-                Shaping the future of media through passionate journalism and creative 
-                storytelling. Join us in making a difference, one story at a time.
-              </p>
-            </div>
-
-            {/* Quick Links */}
-            <div>
-              <h4 className="font-semibold text-lg mb-6">Quick Links</h4>
-              <ul className="space-y-3">
-                <li>
-                  <a href="#home" className="text-primary-foreground/70 hover:text-accent transition-colors">Home</a>
-                </li>
-                <li>
-                  <a href="#positions" className="text-primary-foreground/70 hover:text-accent transition-colors">Positions</a>
-                </li>
-                <li>
-                  <a href="#testimonials" className="text-primary-foreground/70 hover:text-accent transition-colors">Testimonials</a>
-                </li>
-                <li>
-                  <a href="#contact" className="text-primary-foreground/70 hover:text-accent transition-colors">Contact</a>
-                </li>
-              </ul>
-            </div>
-
-            {/* Contact */}
-            <div>
-              <h4 className="font-semibold text-lg mb-6">Contact Information</h4>
-              <ul className="space-y-4">
-                <li className="flex items-center gap-3 text-primary-foreground/70">
-                  <Mail className="w-5 h-5 text-accent" />
-                  <span>uclm@angsilakbo.edu.ph</span>
-                </li>
-                <li className="flex items-start gap-3 text-primary-foreground/70">
-                  <MapPin className="w-5 h-5 text-accent mt-0.5" />
-                  <span>University of Cebu Lapu-Lapu and Mandaue</span>
-                </li>
-              </ul>
-              <div className="flex items-center gap-4 mt-6">
-                <a
-                  href="#"
-                  className="w-10 h-10 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-accent hover:text-accent-foreground transition-all"
-                >
-                  <Facebook className="w-5 h-5" />
-                </a>
-              </div>
+      {/* Footer - Google-style minimal */}
+      <footer id="contact" className="bg-background border-t border-border">
+        {/* Follow Us Row */}
+        <div className="max-w-6xl mx-auto px-4 py-8">
+          <div className="flex items-center gap-6">
+            <span className="text-sm font-medium text-foreground">Follow Us</span>
+            <div className="flex items-center gap-4">
+              <a
+                href="#"
+                className="text-muted-foreground hover:text-foreground transition-all hover:scale-110 active:scale-95"
+                aria-label="Facebook"
+              >
+                <Facebook className="w-5 h-5" />
+              </a>
+              <a
+                href="mailto:uclm@angsilakbo.edu.ph"
+                className="text-muted-foreground hover:text-foreground transition-all hover:scale-110 active:scale-95"
+                aria-label="Email"
+              >
+                <Mail className="w-5 h-5" />
+              </a>
             </div>
           </div>
+        </div>
 
-          {/* Copyright */}
-          <div className="mt-12 pt-8 border-t border-primary-foreground/10 text-center">
-            <p className="text-primary-foreground/50 text-sm">
-              © {new Date().getFullYear()} Ang Silakbo Publication. All rights reserved.
+        {/* Divider */}
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="h-px bg-border" />
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="max-w-6xl mx-auto px-4 py-6">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+              <div className="flex items-center gap-2">
+                <img src={logo} alt="Ang Silakbo Logo" className="w-6 h-6 object-contain" />
+                <span className="font-sans font-bold text-sm text-foreground">ANG SILAKBO</span>
+              </div>
+              <a href="#home" className="text-xs text-muted-foreground hover:text-foreground transition-colors">Home</a>
+              <a href="#positions" className="text-xs text-muted-foreground hover:text-foreground transition-colors">Positions</a>
+              <a href="#testimonials" className="text-xs text-muted-foreground hover:text-foreground transition-colors">Testimonials</a>
+              <a href="#contact" className="text-xs text-muted-foreground hover:text-foreground transition-colors">Contact</a>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              © {new Date().getFullYear()} Ang Silakbo Publication
             </p>
           </div>
         </div>

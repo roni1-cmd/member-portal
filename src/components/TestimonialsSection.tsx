@@ -55,7 +55,7 @@ export function TestimonialsSection() {
           {testimonials.map((testimonial, index) => (
             <div
               key={testimonial.name}
-              className={`${testimonial.bgColor} rounded-3xl p-8 md:p-10 flex flex-col justify-between min-h-[280px] group cursor-pointer hover:shadow-lg transition-all duration-300 ${index === 2 ? "md:col-span-2" : ""}`}
+              className={`${testimonial.bgColor} rounded-3xl p-8 md:p-10 flex flex-col justify-between min-h-[280px] group cursor-pointer transition-all duration-300 hover:shadow-lg hover:-translate-y-1 active:scale-[0.98] ${index === 2 ? "md:col-span-2" : ""}`}
               onClick={() => setSelectedTestimonial(testimonial)}
             >
               {/* Title */}
@@ -71,7 +71,7 @@ export function TestimonialsSection() {
               {/* Author + Arrow */}
               <div className="flex items-center justify-between mt-6">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-foreground/10 flex items-center justify-center text-foreground font-bold text-sm">
+                  <div className="w-10 h-10 rounded-full bg-foreground/10 flex items-center justify-center text-foreground font-bold text-sm transition-transform duration-300 group-hover:scale-110">
                     {testimonial.initial}
                   </div>
                   <div>
@@ -79,8 +79,8 @@ export function TestimonialsSection() {
                     <p className="text-foreground/50 text-xs">{testimonial.role}</p>
                   </div>
                 </div>
-                <button className="w-10 h-10 rounded-full bg-foreground/10 flex items-center justify-center group-hover:bg-accent group-hover:text-accent-foreground transition-all">
-                  <ArrowRight className="w-5 h-5" />
+                <button className="w-10 h-10 rounded-full bg-foreground/10 flex items-center justify-center group-hover:bg-accent group-hover:text-accent-foreground transition-all duration-300 group-hover:rotate-[-15deg]">
+                  <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-0.5" />
                 </button>
               </div>
             </div>
