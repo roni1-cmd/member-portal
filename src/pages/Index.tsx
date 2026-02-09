@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { ApplicationModal } from "@/components/ApplicationModal";
 import { TestimonialsSection } from "@/components/TestimonialsSection";
-import { TeamCard } from "@/components/TeamCard";
-import { Newspaper, ChevronRight, ArrowRight, Facebook, Mail, MapPin } from "lucide-react";
-import heroIllustration from "@/assets/hero-illustration.png";
+import { TeamTabs } from "@/components/TeamCard";
+import { ArrowDown, Facebook, Mail, MapPin } from "lucide-react";
 import logo from "@/assets/logo.png";
 
 type TeamType = "editorial" | "production";
@@ -45,64 +44,43 @@ const Index = () => {
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section id="home" className="relative pt-20 overflow-hidden">
-        {/* Hero Container */}
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
-          {/* Background Illustration Area */}
-          <div className="relative rounded-3xl bg-secondary overflow-hidden min-h-[400px] md:min-h-[500px]">
-            {/* Hero Illustration */}
-            <img 
-              src={heroIllustration} 
-              alt="Student journalists with cameras and microphones"
-              className="absolute inset-0 w-full h-full object-cover object-center"
-            />
-            {/* Subtle overlay for better text contrast */}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-background/30" />
-            
-            {/* Floating Card */}
-            <div className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 w-[90%] sm:w-[350px] md:w-[400px] bg-card rounded-2xl shadow-2xl p-6 md:p-8 animate-slide-up">
-              <span className="text-accent font-semibold text-sm uppercase tracking-wide">
-                NOW ACCEPTING
-              </span>
-              <h1 className="font-display text-2xl md:text-3xl lg:text-4xl text-foreground mt-3 mb-4 leading-tight">
-                Applications for A.Y. 2025-2026 are now open
-              </h1>
-              <p className="text-muted-foreground text-sm md:text-base leading-relaxed mb-6">
-                Join Ang Silakbo and be part of a passionate community dedicated to delivering impactful journalism.
-              </p>
-              <button
-                onClick={() => document.getElementById('positions')?.scrollIntoView({ behavior: 'smooth' })}
-                className="flex items-center gap-2 text-foreground font-medium hover:text-accent transition-colors group"
-              >
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </button>
-            </div>
+      {/* Hero Section - Clean centered text like Google for Education */}
+      <section id="home" className="pt-20">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 text-center">
+          {/* Brand Logo + Name */}
+          <div className="flex items-center justify-center gap-3 mb-10">
+            <img src={logo} alt="Ang Silakbo Logo" className="w-8 h-8 object-contain" />
+            <span className="font-sans font-bold text-lg text-foreground tracking-tight">
+              ANG SILAKBO
+            </span>
           </div>
+
+          {/* Large Hero Heading */}
+          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-foreground leading-tight mb-6 animate-slide-up">
+            Amplifying Voices.
+            <br />
+            Empowering Stories.
+          </h1>
+
+          {/* Subtitle */}
+          <p className="text-muted-foreground text-base md:text-lg lg:text-xl max-w-2xl mx-auto leading-relaxed mb-10 animate-slide-up" style={{ animationDelay: "100ms" }}>
+            We provide students with a platform to develop their journalism skills, create meaningful stories, and make a lasting impact on our campus community.
+          </p>
+
+          {/* CTA Link */}
+          <button
+            onClick={() => document.getElementById('positions')?.scrollIntoView({ behavior: 'smooth' })}
+            className="inline-flex flex-col items-center gap-2 text-accent font-medium hover:underline transition-colors animate-slide-up"
+            style={{ animationDelay: "200ms" }}
+          >
+            <span>Apply for A.Y. 2025-2026</span>
+            <ArrowDown className="w-5 h-5 animate-bounce" />
+          </button>
         </div>
       </section>
 
-      {/* Join Our Team Section */}
-      <section id="positions" className="py-20 md:py-28 px-4">
-        <div className="max-w-6xl mx-auto">
-          {/* Section Header */}
-          <div className="text-center mb-16">
-            <h2 className="font-display text-3xl md:text-4xl lg:text-5xl text-foreground mb-6">
-              Join Our Team
-            </h2>
-            <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
-              Choose between our creative writing team or dynamic production team to showcase 
-              your talents and make a lasting impact in student journalism.
-            </p>
-          </div>
-
-          {/* Team Cards */}
-          <div className="space-y-8">
-            <TeamCard type="editorial" onApply={() => openModal("editorial")} />
-            <TeamCard type="production" onApply={() => openModal("production")} />
-          </div>
-        </div>
-      </section>
+      {/* Positions Section - Tabbed layout */}
+      <TeamTabs onApply={openModal} />
 
       {/* Testimonials Section */}
       <div id="testimonials">
