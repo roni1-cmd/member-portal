@@ -1,80 +1,11 @@
-import { useState, useRef } from "react";
-import { ArrowRight, ChevronLeft, ChevronRight, X } from "lucide-react";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
+import { useState } from "react";
+import { ArrowRight } from "lucide-react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-
-interface TestimonialCardProps {
-  quote: string;
-  name: string;
-  role: string;
-  initial: string;
-  category: string;
-  delay?: number;
-  onSeeMore: () => void;
-}
-
-export function TestimonialCard({ quote, name, role, initial, category, delay = 0, onSeeMore }: TestimonialCardProps) {
-  return (
-    <div 
-      className="group relative bg-card rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 animate-slide-up border border-border"
-      style={{ animationDelay: `${delay}ms` }}
-    >
-      {/* Card Content */}
-      <div className="p-6 md:p-8">
-        {/* Category Tag */}
-        <span className="text-accent font-semibold text-xs uppercase tracking-wider">
-          {category}
-        </span>
-
-        {/* Quote Text */}
-        <p className="text-foreground text-base md:text-lg leading-relaxed mt-3 mb-4 line-clamp-3">
-          {quote}
-        </p>
-        
-        {/* See More Button */}
-        <button 
-          onClick={onSeeMore}
-          className="text-accent font-medium text-sm hover:underline transition-all mb-4"
-        >
-          See more →
-        </button>
-      </div>
-
-      {/* Author Image Section */}
-      <div className="relative h-48 bg-gradient-to-br from-secondary via-accent/10 to-secondary overflow-hidden">
-        {/* Decorative gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-card/80 to-transparent" />
-        
-        {/* Avatar */}
-        <div className="absolute bottom-4 left-6 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-accent flex items-center justify-center text-accent-foreground font-bold text-lg shadow-lg">
-          {initial}
-          </div>
-          <div>
-            <h4 className="font-semibold text-foreground text-sm">{name}</h4>
-            <p className="text-xs text-muted-foreground">{role}</p>
-          </div>
-        </div>
-        
-        {/* Arrow */}
-        <button className="absolute bottom-4 right-6 w-10 h-10 rounded-full bg-card flex items-center justify-center shadow-lg group-hover:bg-accent group-hover:text-accent-foreground transition-all">
-          <ArrowRight className="w-5 h-5" />
-        </button>
-      </div>
-    </div>
-  );
-}
 
 const testimonials = [
   {
@@ -83,6 +14,7 @@ const testimonials = [
     name: "Thea Clarisse Mae Inoc",
     role: "Former Editor In Chief | A.Y. 2024-2025",
     initial: "T",
+    bgColor: "bg-[hsl(350,80%,90%)]",
   },
   {
     category: "Associate Editor",
@@ -90,6 +22,7 @@ const testimonials = [
     name: "Lyka May Jakosalem",
     role: "Former Associate Editor | A.Y. 2024-2025",
     initial: "L",
+    bgColor: "bg-[hsl(45,80%,90%)]",
   },
   {
     category: "Production Team",
@@ -97,6 +30,7 @@ const testimonials = [
     name: "Ron Asnahon",
     role: "Former Head of Production Team | A.Y. 2024-2025",
     initial: "R",
+    bgColor: "bg-[hsl(150,40%,88%)]",
   },
 ];
 
@@ -104,42 +38,54 @@ export function TestimonialsSection() {
   const [selectedTestimonial, setSelectedTestimonial] = useState<typeof testimonials[0] | null>(null);
 
   return (
-    <section className="py-20 md:py-28 px-4 bg-secondary/30">
+    <section className="py-20 md:py-28 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Section Header */}
-        <div className="mb-12 text-center">
-          <h2 className="font-display text-3xl md:text-4xl text-foreground mb-4">
-            Testimonials
+        <div className="mb-6 text-center">
+          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl text-foreground mb-4">
+            Voices from our alumni
           </h2>
           <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
-            Hear from our alumni who have gone on to achieve remarkable success with Ang Silakbo.
+            Hear from the people who shaped Ang Silakbo and went on to achieve remarkable success in their careers.
           </p>
         </div>
 
-        {/* Testimonial Carousel */}
-        <Carousel
-          opts={{
-            align: "start",
-            loop: true,
-          }}
-          className="w-full"
-        >
-          <CarouselContent className="-ml-4">
-            {testimonials.map((testimonial, index) => (
-              <CarouselItem key={testimonial.name} className="pl-4 md:basis-1/2 lg:basis-1/3">
-                <TestimonialCard
-                  {...testimonial}
-                  delay={index * 150}
-                  onSeeMore={() => setSelectedTestimonial(testimonial)}
-                />
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <div className="flex items-center justify-center gap-4 mt-8">
-            <CarouselPrevious className="relative left-0 translate-y-0 bg-card border-border hover:bg-accent hover:text-accent-foreground" />
-            <CarouselNext className="relative right-0 translate-y-0 bg-card border-border hover:bg-accent hover:text-accent-foreground" />
-          </div>
-        </Carousel>
+        {/* Bento Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
+          {testimonials.map((testimonial, index) => (
+            <div
+              key={testimonial.name}
+              className={`${testimonial.bgColor} rounded-3xl p-8 md:p-10 flex flex-col justify-between min-h-[280px] group cursor-pointer hover:shadow-lg transition-all duration-300 ${index === 2 ? "md:col-span-2" : ""}`}
+              onClick={() => setSelectedTestimonial(testimonial)}
+            >
+              {/* Title */}
+              <div>
+                <h3 className="font-sans font-semibold text-xl md:text-2xl text-foreground mb-4 leading-snug">
+                  {testimonial.category}
+                </h3>
+                <p className="text-foreground/70 text-sm md:text-base leading-relaxed line-clamp-3">
+                  "{testimonial.quote}"
+                </p>
+              </div>
+
+              {/* Author + Arrow */}
+              <div className="flex items-center justify-between mt-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-foreground/10 flex items-center justify-center text-foreground font-bold text-sm">
+                    {testimonial.initial}
+                  </div>
+                  <div>
+                    <p className="font-medium text-foreground text-sm">{testimonial.name}</p>
+                    <p className="text-foreground/50 text-xs">{testimonial.role}</p>
+                  </div>
+                </div>
+                <button className="w-10 h-10 rounded-full bg-foreground/10 flex items-center justify-center group-hover:bg-accent group-hover:text-accent-foreground transition-all">
+                  <ArrowRight className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Full Testimonial Dialog */}
