@@ -4,8 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Check, ChevronRight, ChevronLeft, User, Briefcase, FileText, Send, X } from "lucide-react";
+import { Check, ChevronRight, ChevronLeft, Send, X, Facebook, Mail } from "lucide-react";
 import { cn } from "@/lib/utils";
+import logo from "@/assets/logo.png";
 
 type TeamType = "editorial" | "production";
 
@@ -49,12 +50,7 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>;
 
-const steps = [
-  { id: 1, title: "Personal Info", icon: User },
-  { id: 2, title: "Position", icon: Briefcase },
-  { id: 3, title: "Experience", icon: FileText },
-  { id: 4, title: "Final Details", icon: Send },
-];
+const stepLabels = ["Personal Info", "Position", "Experience", "Final Details"];
 
 interface ApplicationModalProps {
   isOpen: boolean;
@@ -148,321 +144,206 @@ export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModal
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Backdrop */}
-      <div 
-        className="absolute inset-0 bg-primary/95 backdrop-blur-sm animate-fade-in"
-        onClick={handleClose}
-      />
-      
-      {/* Modal Content */}
-      <div className="relative w-full h-full overflow-y-auto py-8 px-4 sm:py-12">
-        <div className="max-w-3xl mx-auto animate-scale-in">
-          {/* Close Button */}
-          <button
-            onClick={handleClose}
-            className="absolute top-4 right-4 sm:top-8 sm:right-8 p-2 rounded-full bg-card/10 text-primary-foreground hover:bg-card/20 transition-colors z-10"
-          >
-            <X className="w-6 h-6" />
-          </button>
+    <div className="fixed inset-0 z-50 flex flex-col bg-background animate-fade-in">
+      {/* Top Bar */}
+      <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+        <div className="flex items-center gap-3">
+          <img src={logo} alt="Ang Silakbo Logo" className="w-7 h-7 object-contain" />
+          <span className="font-sans font-bold text-lg text-foreground tracking-tight">
+            ANG SILAKBO
+          </span>
+        </div>
+        <button
+          onClick={handleClose}
+          className="p-2 rounded-full hover:bg-secondary transition-colors active:scale-95"
+        >
+          <X className="w-5 h-5 text-muted-foreground" />
+        </button>
+      </div>
 
+      {/* Scrollable Content */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="max-w-2xl mx-auto px-4 py-12 md:py-16">
           {/* Header */}
-          <div className="text-center mb-8">
-            <span className="inline-block px-4 py-1.5 bg-accent/20 text-accent font-medium text-sm rounded-full mb-4">
+          <div className="text-center mb-10">
+            <span className="inline-block px-4 py-1.5 bg-accent/10 text-accent font-sans font-medium text-sm rounded-full mb-5">
               {teamName}
             </span>
-            <h2 className="font-display text-3xl md:text-4xl text-primary-foreground mb-2">
+            <h2 className="font-sans font-bold text-3xl md:text-4xl lg:text-5xl text-foreground mb-3">
               Join Our Team
             </h2>
-            <p className="text-primary-foreground/70 font-serif">
-              Complete the form below to apply
+            <p className="text-muted-foreground font-sans text-base md:text-lg">
+              Complete the form below to apply for A.Y. 2025-2026
             </p>
           </div>
 
-          {isSubmitted ? (
-            <div className="form-card text-center animate-scale-in">
-              <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-accent/20 flex items-center justify-center">
-                <Check className="w-10 h-10 text-accent" />
+          {/* Step Indicator */}
+          <div className="flex items-center justify-center gap-2 mb-10">
+            {stepLabels.map((label, i) => (
+              <div key={label} className="flex items-center gap-2">
+                <div
+                  className={cn(
+                    "w-8 h-8 rounded-full flex items-center justify-center text-sm font-sans font-semibold transition-all duration-300",
+                    currentStep > i + 1
+                      ? "bg-accent text-accent-foreground"
+                      : currentStep === i + 1
+                      ? "bg-foreground text-background"
+                      : "bg-secondary text-muted-foreground"
+                  )}
+                >
+                  {currentStep > i + 1 ? <Check className="w-4 h-4" /> : i + 1}
+                </div>
+                <span className={cn(
+                  "text-xs font-sans font-medium hidden sm:block",
+                  currentStep >= i + 1 ? "text-foreground" : "text-muted-foreground"
+                )}>
+                  {label}
+                </span>
+                {i < stepLabels.length - 1 && (
+                  <div className={cn(
+                    "w-6 sm:w-10 h-0.5 mx-1",
+                    currentStep > i + 1 ? "bg-accent" : "bg-border"
+                  )} />
+                )}
               </div>
-              <h3 className="font-display text-3xl mb-4 text-foreground">Application Submitted!</h3>
-              <p className="text-muted-foreground font-serif leading-relaxed max-w-md mx-auto mb-8">
+            ))}
+          </div>
+
+          {isSubmitted ? (
+            <div className="bg-card rounded-2xl p-10 text-center animate-scale-in" style={{ boxShadow: 'var(--shadow-card)' }}>
+              <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-accent/10 flex items-center justify-center">
+                <Check className="w-8 h-8 text-accent" />
+              </div>
+              <h3 className="font-sans font-bold text-2xl md:text-3xl mb-3 text-foreground">Application Submitted!</h3>
+              <p className="text-muted-foreground font-sans leading-relaxed max-w-md mx-auto mb-8">
                 Thank you for your interest in joining Ang Silakbo. We will review your application and get back to you soon.
               </p>
-              <button onClick={handleClose} className="btn-accent">
+              <button onClick={handleClose} className="bg-accent text-accent-foreground font-sans font-semibold px-8 py-3 rounded-full hover:bg-accent/90 transition-all active:scale-95">
                 Close
               </button>
             </div>
           ) : (
-            <>
-              {/* Progress Steps */}
-              <div className="flex items-center justify-between mb-8 px-4">
-                {steps.map((step, index) => (
-                  <div key={step.id} className="flex items-center">
-                    <div className="flex flex-col items-center">
-                      <div
-                        className={cn(
-                          "step-indicator",
-                          currentStep === step.id && "active",
-                          currentStep > step.id && "completed",
-                          currentStep < step.id && "pending"
-                        )}
-                      >
-                        {currentStep > step.id ? (
-                          <Check className="w-5 h-5" />
-                        ) : (
-                          <step.icon className="w-5 h-5" />
-                        )}
-                      </div>
-                      <span
-                        className={cn(
-                          "mt-2 text-xs font-medium hidden sm:block",
-                          currentStep >= step.id ? "text-primary-foreground" : "text-primary-foreground/50"
-                        )}
-                      >
-                        {step.title}
-                      </span>
-                    </div>
-                    {index < steps.length - 1 && (
-                      <div
-                        className={cn(
-                          "w-8 sm:w-16 lg:w-24 h-0.5 mx-2 transition-colors duration-300",
-                          currentStep > step.id ? "bg-accent" : "bg-primary-foreground/20"
-                        )}
-                      />
-                    )}
-                  </div>
-                ))}
-              </div>
-
-              {/* Form Card */}
-              <form onSubmit={handleSubmit(onSubmit)} className="form-card">
-                {/* Step 1: Personal Information */}
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div className="bg-card rounded-2xl p-6 md:p-10" style={{ boxShadow: 'var(--shadow-card)' }}>
+                {/* Step 1 */}
                 {currentStep === 1 && (
                   <div className="animate-slide-in-right">
-                    <h3 className="font-display text-2xl md:text-3xl mb-2 text-foreground">Personal Information</h3>
-                    <p className="text-muted-foreground mb-8 font-serif">Tell us about yourself</p>
-
+                    <h3 className="font-sans font-bold text-xl md:text-2xl mb-1 text-foreground">Personal Information</h3>
+                    <p className="text-muted-foreground font-sans text-sm mb-8">Tell us about yourself</p>
                     <div className="space-y-5">
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Full Name *</label>
-                        <input
-                          {...register("full_name")}
-                          className="input-editorial w-full"
-                          placeholder="Juan Dela Cruz"
-                        />
-                        {errors.full_name && (
-                          <p className="text-destructive text-sm mt-1">{errors.full_name.message}</p>
-                        )}
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Section *</label>
-                        <input
-                          {...register("section")}
-                          className="input-editorial w-full"
-                          placeholder="e.g., 12-STEM A"
-                        />
-                        {errors.section && (
-                          <p className="text-destructive text-sm mt-1">{errors.section.message}</p>
-                        )}
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Email Address *</label>
-                        <input
-                          {...register("email")}
-                          type="email"
-                          className="input-editorial w-full"
-                          placeholder="your.email@example.com"
-                        />
-                        {errors.email && (
-                          <p className="text-destructive text-sm mt-1">{errors.email.message}</p>
-                        )}
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Phone Number *</label>
-                        <input
-                          {...register("phone_number")}
-                          type="tel"
-                          className="input-editorial w-full"
-                          placeholder="09XX XXX XXXX"
-                        />
-                        {errors.phone_number && (
-                          <p className="text-destructive text-sm mt-1">{errors.phone_number.message}</p>
-                        )}
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Complete Address *</label>
-                        <textarea
-                          {...register("complete_address")}
-                          className="input-editorial w-full min-h-[100px] resize-none"
-                          placeholder="Street, Barangay, City/Municipality, Province"
-                        />
-                        {errors.complete_address && (
-                          <p className="text-destructive text-sm mt-1">{errors.complete_address.message}</p>
-                        )}
-                      </div>
+                      <InputField label="Full Name" error={errors.full_name?.message}>
+                        <input {...register("full_name")} className="form-input-pill" placeholder="Juan Dela Cruz" />
+                      </InputField>
+                      <InputField label="Section" error={errors.section?.message}>
+                        <input {...register("section")} className="form-input-pill" placeholder="e.g., 12-STEM A" />
+                      </InputField>
+                      <InputField label="Email Address" error={errors.email?.message}>
+                        <input {...register("email")} type="email" className="form-input-pill" placeholder="your.email@example.com" />
+                      </InputField>
+                      <InputField label="Phone Number" error={errors.phone_number?.message}>
+                        <input {...register("phone_number")} type="tel" className="form-input-pill" placeholder="09XX XXX XXXX" />
+                      </InputField>
+                      <InputField label="Complete Address" error={errors.complete_address?.message}>
+                        <textarea {...register("complete_address")} className="form-input-pill min-h-[100px] resize-none" placeholder="Street, Barangay, City/Municipality, Province" />
+                      </InputField>
                     </div>
                   </div>
                 )}
 
-                {/* Step 2: Position Selection */}
+                {/* Step 2 */}
                 {currentStep === 2 && (
                   <div className="animate-slide-in-right">
-                    <h3 className="font-display text-2xl md:text-3xl mb-2 text-foreground">Position Selection</h3>
-                    <p className="text-muted-foreground mb-8 font-serif">Choose your desired role in the {teamName}</p>
-
+                    <h3 className="font-sans font-bold text-xl md:text-2xl mb-1 text-foreground">Position Selection</h3>
+                    <p className="text-muted-foreground font-sans text-sm mb-8">Choose your desired role in the {teamName}</p>
                     <div className="grid gap-3">
                       {positions.map((position) => (
                         <label
                           key={position}
                           className={cn(
-                            "flex items-center p-4 rounded-xl border-2 cursor-pointer transition-all duration-200",
+                            "flex items-center p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 font-sans",
                             watch("position") === position
-                              ? "border-accent bg-accent/10"
-                              : "border-border hover:border-accent/50 hover:bg-secondary/50"
+                              ? "border-accent bg-accent/5"
+                              : "border-border hover:border-accent/40 hover:bg-secondary/50"
                           )}
                         >
-                          <input
-                            type="radio"
-                            {...register("position")}
-                            value={position}
-                            className="sr-only"
-                          />
-                          <div
-                            className={cn(
-                              "w-5 h-5 rounded-full border-2 mr-4 flex items-center justify-center transition-all",
-                              watch("position") === position
-                                ? "border-accent bg-accent"
-                                : "border-muted-foreground"
-                            )}
-                          >
-                            {watch("position") === position && (
-                              <div className="w-2 h-2 rounded-full bg-accent-foreground" />
-                            )}
+                          <input type="radio" {...register("position")} value={position} className="sr-only" />
+                          <div className={cn(
+                            "w-5 h-5 rounded-full border-2 mr-4 flex items-center justify-center transition-all",
+                            watch("position") === position ? "border-accent bg-accent" : "border-muted-foreground"
+                          )}>
+                            {watch("position") === position && <div className="w-2 h-2 rounded-full bg-accent-foreground" />}
                           </div>
-                          <span className="font-medium">{position}</span>
+                          <span className="font-medium text-sm">{position}</span>
                         </label>
                       ))}
                     </div>
-                    {errors.position && (
-                      <p className="text-destructive text-sm mt-3">{errors.position.message}</p>
-                    )}
+                    {errors.position && <p className="text-destructive text-sm mt-3 font-sans">{errors.position.message}</p>}
                   </div>
                 )}
 
-                {/* Step 3: Experience & Portfolio */}
+                {/* Step 3 */}
                 {currentStep === 3 && (
                   <div className="animate-slide-in-right">
-                    <h3 className="font-display text-2xl md:text-3xl mb-2 text-foreground">Experience & Portfolio</h3>
-                    <p className="text-muted-foreground mb-8 font-serif">Share your background and work</p>
-
+                    <h3 className="font-sans font-bold text-xl md:text-2xl mb-1 text-foreground">Experience & Portfolio</h3>
+                    <p className="text-muted-foreground font-sans text-sm mb-8">Share your background and work</p>
                     <div className="space-y-5">
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Relevant Experience *</label>
-                        <textarea
-                          {...register("relevant_experience")}
-                          className="input-editorial w-full min-h-[180px] resize-none"
-                          placeholder="Describe your experience in journalism, writing, photography, video production, or any related field..."
-                        />
-                        {errors.relevant_experience && (
-                          <p className="text-destructive text-sm mt-1">{errors.relevant_experience.message}</p>
-                        )}
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Portfolio Google Drive Link</label>
-                        <input
-                          {...register("portfolio_link")}
-                          type="url"
-                          className="input-editorial w-full"
-                          placeholder="https://drive.google.com/..."
-                        />
-                        <p className="text-muted-foreground text-xs mt-2">
-                          Share a link to your work samples (articles, photos, videos, etc.)
-                        </p>
-                        {errors.portfolio_link && (
-                          <p className="text-destructive text-sm mt-1">{errors.portfolio_link.message}</p>
-                        )}
-                      </div>
+                      <InputField label="Relevant Experience" error={errors.relevant_experience?.message}>
+                        <textarea {...register("relevant_experience")} className="form-input-pill min-h-[160px] resize-none" placeholder="Describe your experience in journalism, writing, photography, video production, or any related field..." />
+                      </InputField>
+                      <InputField label="Portfolio Google Drive Link" error={errors.portfolio_link?.message} optional>
+                        <input {...register("portfolio_link")} type="url" className="form-input-pill" placeholder="https://drive.google.com/..." />
+                      </InputField>
                     </div>
                   </div>
                 )}
 
-                {/* Step 4: Final Details */}
+                {/* Step 4 */}
                 {currentStep === 4 && (
                   <div className="animate-slide-in-right">
-                    <h3 className="font-display text-2xl md:text-3xl mb-2 text-foreground">Final Details</h3>
-                    <p className="text-muted-foreground mb-8 font-serif">Almost there!</p>
-
+                    <h3 className="font-sans font-bold text-xl md:text-2xl mb-1 text-foreground">Final Details</h3>
+                    <p className="text-muted-foreground font-sans text-sm mb-8">Almost there!</p>
                     <div className="space-y-5">
                       <div>
-                        <label className="block text-sm font-medium mb-3">How did you hear about us? *</label>
+                        <label className="block text-sm font-sans font-medium mb-3 text-foreground">How did you hear about us? *</label>
                         <div className="grid gap-3 sm:grid-cols-2">
                           {referralSources.map((source) => (
                             <label
                               key={source}
                               className={cn(
-                                "flex items-center p-3 rounded-lg border-2 cursor-pointer transition-all duration-200",
+                                "flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all duration-200 font-sans",
                                 watch("referral_source") === source
-                                  ? "border-accent bg-accent/10"
-                                  : "border-border hover:border-accent/50"
+                                  ? "border-accent bg-accent/5"
+                                  : "border-border hover:border-accent/40"
                               )}
                             >
-                              <input
-                                type="radio"
-                                {...register("referral_source")}
-                                value={source}
-                                className="sr-only"
-                              />
-                              <div
-                                className={cn(
-                                  "w-4 h-4 rounded-full border-2 mr-3 flex items-center justify-center transition-all",
-                                  watch("referral_source") === source
-                                    ? "border-accent bg-accent"
-                                    : "border-muted-foreground"
-                                )}
-                              >
-                                {watch("referral_source") === source && (
-                                  <div className="w-1.5 h-1.5 rounded-full bg-accent-foreground" />
-                                )}
+                              <input type="radio" {...register("referral_source")} value={source} className="sr-only" />
+                              <div className={cn(
+                                "w-4 h-4 rounded-full border-2 mr-3 flex items-center justify-center transition-all",
+                                watch("referral_source") === source ? "border-accent bg-accent" : "border-muted-foreground"
+                              )}>
+                                {watch("referral_source") === source && <div className="w-1.5 h-1.5 rounded-full bg-accent-foreground" />}
                               </div>
                               <span className="text-sm font-medium">{source}</span>
                             </label>
                           ))}
                         </div>
-                        {errors.referral_source && (
-                          <p className="text-destructive text-sm mt-2">{errors.referral_source.message}</p>
-                        )}
+                        {errors.referral_source && <p className="text-destructive text-sm mt-2 font-sans">{errors.referral_source.message}</p>}
                       </div>
-
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Additional Message (Optional)</label>
-                        <textarea
-                          {...register("additional_message")}
-                          className="input-editorial w-full min-h-[120px] resize-none"
-                          placeholder="Anything else you'd like us to know?"
-                        />
-                        {errors.additional_message && (
-                          <p className="text-destructive text-sm mt-1">{errors.additional_message.message}</p>
-                        )}
-                      </div>
+                      <InputField label="Additional Message" error={errors.additional_message?.message} optional>
+                        <textarea {...register("additional_message")} className="form-input-pill min-h-[100px] resize-none" placeholder="Anything else you'd like us to know?" />
+                      </InputField>
                     </div>
                   </div>
                 )}
 
-                {/* Navigation Buttons */}
+                {/* Navigation */}
                 <div className="flex justify-between mt-10 pt-6 border-t border-border">
                   <button
                     type="button"
                     onClick={prevStep}
                     className={cn(
-                      "flex items-center gap-2 px-5 py-2.5 rounded-lg font-medium transition-all",
-                      currentStep === 1
-                        ? "opacity-0 pointer-events-none"
-                        : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                      "flex items-center gap-2 px-5 py-2.5 rounded-full font-sans font-medium text-sm transition-all active:scale-95",
+                      currentStep === 1 ? "opacity-0 pointer-events-none" : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                     )}
                   >
                     <ChevronLeft className="w-4 h-4" />
@@ -473,7 +354,7 @@ export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModal
                     <button
                       type="button"
                       onClick={nextStep}
-                      className="btn-accent flex items-center gap-2"
+                      className="flex items-center gap-2 bg-foreground text-background font-sans font-semibold text-sm px-6 py-2.5 rounded-full hover:opacity-90 transition-all active:scale-95"
                     >
                       Continue
                       <ChevronRight className="w-4 h-4" />
@@ -482,18 +363,61 @@ export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModal
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="btn-accent flex items-center gap-2 disabled:opacity-50"
+                      className="flex items-center gap-2 bg-accent text-accent-foreground font-sans font-semibold text-sm px-6 py-2.5 rounded-full hover:bg-accent/90 transition-all active:scale-95 disabled:opacity-50"
                     >
                       {isSubmitting ? "Submitting..." : "Submit Application"}
                       <Send className="w-4 h-4" />
                     </button>
                   )}
                 </div>
-              </form>
-            </>
+              </div>
+            </form>
           )}
         </div>
+
+        {/* Footer */}
+        <footer className="bg-background border-t border-border mt-auto">
+          <div className="max-w-6xl mx-auto px-4 py-8">
+            <div className="flex items-center gap-6">
+              <span className="text-sm font-sans font-medium text-foreground">Follow Us</span>
+              <div className="flex items-center gap-4">
+                <a href="#" className="text-muted-foreground hover:text-foreground transition-all hover:scale-110 active:scale-95" aria-label="Facebook">
+                  <Facebook className="w-5 h-5" />
+                </a>
+                <a href="mailto:uclm@angsilakbo.edu.ph" className="text-muted-foreground hover:text-foreground transition-all hover:scale-110 active:scale-95" aria-label="Email">
+                  <Mail className="w-5 h-5" />
+                </a>
+              </div>
+            </div>
+          </div>
+          <div className="max-w-6xl mx-auto px-4"><div className="h-px bg-border" /></div>
+          <div className="max-w-6xl mx-auto px-4 py-6">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+                <div className="flex items-center gap-2">
+                  <img src={logo} alt="Ang Silakbo Logo" className="w-6 h-6 object-contain" />
+                  <span className="font-sans font-bold text-sm text-foreground">ANG SILAKBO</span>
+                </div>
+              </div>
+              <p className="text-xs font-sans text-muted-foreground">
+                © {new Date().getFullYear()} Ang Silakbo Publication
+              </p>
+            </div>
+          </div>
+        </footer>
       </div>
+    </div>
+  );
+}
+
+function InputField({ label, error, optional, children }: { label: string; error?: string; optional?: boolean; children: React.ReactNode }) {
+  return (
+    <div>
+      <label className="block text-sm font-sans font-medium mb-2 text-foreground">
+        {label} {optional ? <span className="text-muted-foreground font-normal">(Optional)</span> : "*"}
+      </label>
+      {children}
+      {error && <p className="text-destructive text-sm mt-1 font-sans">{error}</p>}
     </div>
   );
 }
