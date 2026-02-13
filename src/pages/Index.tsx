@@ -133,7 +133,7 @@ const Index = () => {
           </div>
 
           <p className="text-white/70 text-sm mt-6">
-            Join our publication for A.Y. 2025-2026
+            Join our publication for A.Y. 2026-2027
           </p>
         </div>
 
