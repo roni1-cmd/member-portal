@@ -110,7 +110,7 @@ const Index = () => {
           </div>
 
           <h1
-            className="text-6xl md:text-8xl lg:text-9xl font-bold text-white leading-tight mb-4"
+            className="text-5xl md:text-7xl lg:text-8xl font-bold text-white leading-tight mb-4"
             style={{ fontFamily: 'Poppins, sans-serif' }}
           >
             ANG SILAKBO
