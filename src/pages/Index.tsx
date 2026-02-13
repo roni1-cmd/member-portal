@@ -1,130 +1,183 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { ApplicationModal } from "@/components/ApplicationModal";
-import { TestimonialsSection } from "@/components/TestimonialsSection";
-import { TeamTabs } from "@/components/TeamCard";
-import { ArrowDown, Facebook, Mail } from "lucide-react";
+import { Facebook, Mail, Send } from "lucide-react";
 import logo from "@/assets/logo.png";
+import slide1 from "@/assets/slide-1.png";
+import slide2 from "@/assets/slide-2.png";
+import slide3 from "@/assets/slide-3.png";
 
 type TeamType = "editorial" | "production";
+
+const slides = [slide1, slide2, slide3];
+
+const typingPhrases = [
+  "I want to apply as 'Broadcaster'",
+  "I want to apply as 'Feature Writer'",
+  "I want to apply as 'Editorial Writer'",
+  "I want to apply as 'Photojournalist'",
+  "I want to apply as 'Layout Artist'",
+  "I want to apply as 'Video Editor'",
+];
 
 const Index = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState<TeamType>("editorial");
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [typedText, setTypedText] = useState("");
+  const [phraseIndex, setPhraseIndex] = useState(0);
+  const [charIndex, setCharIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const openModal = (team: TeamType) => {
     setSelectedTeam(team);
     setIsModalOpen(true);
   };
 
+  // Slideshow
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Typing animation
+  useEffect(() => {
+    const currentPhrase = typingPhrases[phraseIndex];
+    const timeout = setTimeout(
+      () => {
+        if (!isDeleting) {
+          setTypedText(currentPhrase.slice(0, charIndex + 1));
+          setCharIndex((prev) => prev + 1);
+          if (charIndex + 1 === currentPhrase.length) {
+            setTimeout(() => setIsDeleting(true), 1500);
+          }
+        } else {
+          setTypedText(currentPhrase.slice(0, charIndex - 1));
+          setCharIndex((prev) => prev - 1);
+          if (charIndex <= 1) {
+            setIsDeleting(false);
+            setPhraseIndex((prev) => (prev + 1) % typingPhrases.length);
+            setCharIndex(0);
+          }
+        }
+      },
+      isDeleting ? 30 : 60
+    );
+    return () => clearTimeout(timeout);
+  }, [charIndex, isDeleting, phraseIndex]);
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen flex flex-col bg-background">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 md:h-20">
+          <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
-              <img src={logo} alt="Ang Silakbo Logo" className="w-8 h-8 md:w-10 md:h-10 object-contain" />
-              <span className="font-sans font-bold text-xl md:text-2xl text-foreground tracking-tight">
+              <img src={logo} alt="Ang Silakbo Logo" className="w-8 h-8 object-contain" />
+              <span className="font-sans font-bold text-xl text-foreground tracking-tight" style={{ fontFamily: 'Poppins, sans-serif' }}>
                 ANG SILAKBO
               </span>
             </div>
-            <div className="hidden md:flex items-center gap-8">
-              <a href="#home" className="text-sm font-medium text-foreground hover:text-accent transition-colors border-b-2 border-accent pb-1">Home</a>
-              <a href="#positions" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Positions</a>
-              <a href="#testimonials" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Testimonials</a>
-              <a href="#contact" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Contact</a>
-            </div>
             <button
               onClick={() => openModal("editorial")}
-              className="bg-accent text-accent-foreground font-semibold text-sm py-2.5 px-6 rounded-full hover:bg-accent/90 transition-all active:scale-95"
+              className="bg-accent text-accent-foreground font-semibold text-sm py-2 px-6 rounded-full hover:bg-accent/90 transition-all active:scale-95"
             >
-              Subscribe
+              Apply Now
             </button>
           </div>
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section id="home" className="pt-20">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 text-center">
-          <div className="flex items-center justify-center gap-3 mb-10">
-            <img src={logo} alt="Ang Silakbo Logo" className="w-8 h-8 object-contain" />
-            <span className="font-sans font-bold text-lg text-foreground tracking-tight">
-              ANG SILAKBO
-            </span>
+      {/* Hero - Full viewport with slideshow */}
+      <section className="relative flex-1 min-h-screen flex items-center justify-center overflow-hidden">
+        {/* Background slideshow */}
+        {slides.map((slide, i) => (
+          <div
+            key={i}
+            className="absolute inset-0 transition-opacity duration-1000 ease-in-out"
+            style={{ opacity: currentSlide === i ? 1 : 0 }}
+          >
+            <img
+              src={slide}
+              alt=""
+              className="w-full h-full object-cover"
+            />
+          </div>
+        ))}
+
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-black/50" />
+
+        {/* Content */}
+        <div className="relative z-10 max-w-3xl mx-auto px-4 text-center">
+          <div className="flex items-center justify-center gap-3 mb-8">
+            <img src={logo} alt="Ang Silakbo Logo" className="w-10 h-10 object-contain" />
           </div>
 
-          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-foreground leading-tight mb-6 animate-slide-up">
-            Amplifying Voices.
-            <br />
-            Empowering Stories.
+          <h1
+            className="text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-4"
+            style={{ fontFamily: 'Poppins, sans-serif' }}
+          >
+            ANG SILAKBO
           </h1>
 
-          <p className="text-muted-foreground text-base md:text-lg lg:text-xl max-w-2xl mx-auto leading-relaxed mb-10 animate-slide-up" style={{ animationDelay: "100ms" }}>
-            We provide students with a platform to develop their journalism skills, create meaningful stories, and make a lasting impact on our campus community.
+          <p className="text-white/80 text-lg md:text-xl mb-10 font-light">
+            Amplifying Voices. Empowering Stories.
           </p>
 
-          <button
-            onClick={() => document.getElementById('positions')?.scrollIntoView({ behavior: 'smooth' })}
-            className="inline-flex flex-col items-center gap-2 text-accent font-medium hover:underline transition-all animate-slide-up active:scale-95"
-            style={{ animationDelay: "200ms" }}
+          {/* Search bar with typing animation */}
+          <div
+            className="mx-auto max-w-xl bg-white/95 backdrop-blur-sm rounded-full flex items-center px-6 py-4 shadow-2xl cursor-pointer hover:shadow-3xl transition-shadow active:scale-[0.98]"
+            onClick={() => openModal("editorial")}
           >
-            <span>Apply for A.Y. 2025-2026</span>
-            <ArrowDown className="w-5 h-5 animate-bounce" />
-          </button>
+            <span className="flex-1 text-left text-muted-foreground text-base md:text-lg font-normal" style={{ fontFamily: 'Poppins, sans-serif' }}>
+              {typedText}
+              <span className="inline-block w-0.5 h-5 bg-accent ml-0.5 animate-pulse align-middle" />
+            </span>
+            <Send className="w-5 h-5 text-accent ml-3 shrink-0" />
+          </div>
+
+          <p className="text-white/70 text-sm mt-6">
+            Join our publication for A.Y. 2025-2026
+          </p>
+        </div>
+
+        {/* Slide indicators */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+          {slides.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrentSlide(i)}
+              className={`w-2 h-2 rounded-full transition-all ${
+                currentSlide === i ? "bg-white w-6" : "bg-white/50"
+              }`}
+            />
+          ))}
         </div>
       </section>
 
-      {/* Positions Section */}
-      <TeamTabs onApply={openModal} />
-
-      {/* Testimonials Section */}
-      <div id="testimonials">
-        <TestimonialsSection />
-      </div>
-
-      {/* Footer - Google-style minimal */}
-      <footer id="contact" className="bg-background border-t border-border">
-        {/* Follow Us Row */}
+      {/* Footer */}
+      <footer className="bg-background border-t border-border">
         <div className="max-w-6xl mx-auto px-4 py-8">
           <div className="flex items-center gap-6">
             <span className="text-sm font-medium text-foreground">Follow Us</span>
             <div className="flex items-center gap-4">
-              <a
-                href="#"
-                className="text-muted-foreground hover:text-foreground transition-all hover:scale-110 active:scale-95"
-                aria-label="Facebook"
-              >
+              <a href="#" className="text-muted-foreground hover:text-foreground transition-all hover:scale-110 active:scale-95" aria-label="Facebook">
                 <Facebook className="w-5 h-5" />
               </a>
-              <a
-                href="mailto:uclm@angsilakbo.edu.ph"
-                className="text-muted-foreground hover:text-foreground transition-all hover:scale-110 active:scale-95"
-                aria-label="Email"
-              >
+              <a href="mailto:uclm@angsilakbo.edu.ph" className="text-muted-foreground hover:text-foreground transition-all hover:scale-110 active:scale-95" aria-label="Email">
                 <Mail className="w-5 h-5" />
               </a>
             </div>
           </div>
         </div>
-
-        {/* Divider */}
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="h-px bg-border" />
-        </div>
-
-        {/* Bottom Bar */}
+        <div className="max-w-6xl mx-auto px-4"><div className="h-px bg-border" /></div>
         <div className="max-w-6xl mx-auto px-4 py-6">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-              <div className="flex items-center gap-2">
-                <img src={logo} alt="Ang Silakbo Logo" className="w-6 h-6 object-contain" />
-                <span className="font-sans font-bold text-sm text-foreground">ANG SILAKBO</span>
-              </div>
-              <a href="#home" className="text-xs text-muted-foreground hover:text-foreground transition-colors">Home</a>
-              <a href="#positions" className="text-xs text-muted-foreground hover:text-foreground transition-colors">Positions</a>
-              <a href="#testimonials" className="text-xs text-muted-foreground hover:text-foreground transition-colors">Testimonials</a>
-              <a href="#contact" className="text-xs text-muted-foreground hover:text-foreground transition-colors">Contact</a>
+            <div className="flex items-center gap-2">
+              <img src={logo} alt="Ang Silakbo Logo" className="w-6 h-6 object-contain" />
+              <span className="font-bold text-sm text-foreground" style={{ fontFamily: 'Poppins, sans-serif' }}>ANG SILAKBO</span>
             </div>
             <p className="text-xs text-muted-foreground">
               © {new Date().getFullYear()} Ang Silakbo Publication
@@ -133,7 +186,6 @@ const Index = () => {
         </div>
       </footer>
 
-      {/* Application Modal */}
       <ApplicationModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
