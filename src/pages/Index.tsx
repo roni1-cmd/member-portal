@@ -110,7 +110,7 @@ const Index = () => {
           </div>
 
           <h1
-            className="text-5xl md:text-7xl lg:text-8xl font-bold text-white leading-tight mb-4"
+            className="text-6xl md:text-8xl lg:text-9xl font-bold text-white leading-tight mb-4"
             style={{ fontFamily: 'Poppins, sans-serif' }}
           >
             ANG SILAKBO
@@ -133,7 +133,7 @@ const Index = () => {
           </div>
 
           <p className="text-white/70 text-sm mt-6">
-            Join our publication for A.Y. 2026-2027
+            Join our publication for A.Y. 2025-2026
           </p>
         </div>
 
