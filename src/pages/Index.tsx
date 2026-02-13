@@ -104,32 +104,32 @@ const Index = () => {
         <div className="absolute inset-0 bg-black/50" />
 
         {/* Content */}
-        <div className="relative z-10 max-w-3xl mx-auto px-4 text-center">
-          <div className="flex items-center justify-center gap-3 mb-8">
-            <img src={logo} alt="Ang Silakbo Logo" className="w-10 h-10 object-contain" />
+        <div className="relative z-10 max-w-7xl px-4 sm:px-6 lg:px-8 text-left flex flex-col items-start">
+          <div className="flex items-center justify-start gap-3 mb-8">
+            <img src={logo} alt="Ang Silakbo Logo" className="w-12 h-12 object-contain" />
           </div>
 
           <h1
-            className="text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-4"
+            className="text-6xl md:text-8xl lg:text-9xl font-bold text-white leading-tight mb-4"
             style={{ fontFamily: 'Poppins, sans-serif' }}
           >
             ANG SILAKBO
           </h1>
 
-          <p className="text-white/80 text-lg md:text-xl mb-10 font-light">
+          <p className="text-white/80 text-xl md:text-2xl mb-12 font-light">
             Amplifying Voices. Empowering Stories.
           </p>
 
           {/* Search bar with typing animation */}
           <div
-            className="mx-auto max-w-xl bg-white/95 backdrop-blur-sm rounded-full flex items-center px-6 py-4 shadow-2xl cursor-pointer hover:shadow-3xl transition-shadow active:scale-[0.98]"
+            className="w-full max-w-3xl bg-white/95 backdrop-blur-sm rounded-full flex items-center px-8 py-6 shadow-2xl cursor-pointer hover:shadow-3xl transition-shadow active:scale-[0.98]"
             onClick={() => openModal("editorial")}
           >
-            <span className="flex-1 text-left text-muted-foreground text-base md:text-lg font-normal" style={{ fontFamily: 'Poppins, sans-serif' }}>
+            <span className="flex-1 text-left text-muted-foreground text-xl md:text-3xl font-normal" style={{ fontFamily: 'Poppins, sans-serif' }}>
               {typedText}
-              <span className="inline-block w-0.5 h-5 bg-accent ml-0.5 animate-pulse align-middle" />
+              <span className="inline-block w-0.5 h-8 bg-accent ml-0.5 animate-pulse align-middle" />
             </span>
-            <Send className="w-5 h-5 text-accent ml-3 shrink-0" />
+            <Send className="w-8 h-8 text-accent ml-4 shrink-0" />
           </div>
 
           <p className="text-white/70 text-sm mt-6">
