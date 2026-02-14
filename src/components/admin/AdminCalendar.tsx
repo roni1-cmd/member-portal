@@ -123,7 +123,7 @@ export function AdminCalendar({ applications, onSelectApplication }: AdminCalend
                   onClick={() => onSelectApplication(app)}
                 >
                   <img
-                    src={getAvatarUrl(app.full_name)}
+                    src={getAvatarUrl(app.full_name, 'notionists')}
                     alt={app.full_name}
                     className="w-12 h-12 rounded-full bg-secondary shrink-0"
                   />
@@ -131,7 +131,8 @@ export function AdminCalendar({ applications, onSelectApplication }: AdminCalend
                     <p className="font-medium text-foreground truncate">{app.full_name}</p>
                     <p className="text-sm text-muted-foreground truncate">{app.email}</p>
                   </div>
-                  <span className={`text-xs font-medium px-3 py-1.5 rounded-full bg-gradient-to-r ${getGradient(app.position)} text-white shrink-0`}>
+                  <span className={`text-xs font-medium px-3 py-1.5 rounded-full bg-gradient-to-r ${getGradient(app.position)} text-white shrink-0 flex items-center gap-1.5`}>
+                    <img src={getAvatarUrl(app.position, 'thumbs')} className="w-3.5 h-3.5 rounded-full bg-white/20" alt="" />
                     {app.position}
                   </span>
                   <span className="text-xs text-muted-foreground shrink-0">

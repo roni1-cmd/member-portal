@@ -127,7 +127,7 @@ export default function Admin() {
                         className="h-14 px-6 rounded-r-full rounded-l-none group-data-[collapsible=icon]:rounded-md text-foreground hover:bg-secondary group cursor-pointer"
                       >
                         <img
-                          src={getAvatarUrl(position)}
+                          src={getAvatarUrl(position, 'thumbs')}
                           alt={position}
                           className="w-8 h-8 rounded-full shrink-0 object-cover"
                         />
@@ -212,7 +212,7 @@ export default function Admin() {
                   <div className="flex items-start gap-4 mb-6">
                     <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${getGradient(selectedApplication.position)} flex items-center justify-center shrink-0 overflow-hidden`}>
                       <img
-                        src={getAvatarUrl(selectedApplication.position)}
+                        src={getAvatarUrl(selectedApplication.position, 'thumbs')}
                         alt={selectedApplication.position}
                         className="w-full h-full object-cover"
                       />
@@ -304,7 +304,8 @@ export default function Admin() {
                   <div className="bg-card border border-border rounded-lg p-5">
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="font-sans font-semibold text-foreground">Applicant Info</h3>
-                      <span className={`text-xs font-medium px-2.5 py-1 rounded-full bg-gradient-to-r ${getGradient(selectedApplication.position)} text-white`}>
+                      <span className={`text-xs font-medium px-2.5 py-1 rounded-full bg-gradient-to-r ${getGradient(selectedApplication.position)} text-white flex items-center gap-1.5`}>
+                        <img src={getAvatarUrl(selectedApplication.position, 'thumbs')} className="w-3.5 h-3.5 rounded-full bg-white/20" alt="" />
                         {selectedApplication.position}
                       </span>
                     </div>
@@ -312,7 +313,7 @@ export default function Admin() {
                     {/* Avatar & Name */}
                     <div className="flex items-center gap-3 mb-4">
                       <img
-                        src={getAvatarUrl(selectedApplication.full_name)}
+                        src={getAvatarUrl(selectedApplication.full_name, 'notionists')}
                         alt={selectedApplication.full_name}
                         className="w-10 h-10 rounded-full bg-secondary"
                       />
@@ -448,7 +449,8 @@ export default function Admin() {
                           >
                             {/* Gradient Header */}
                             <div className={`relative h-32 bg-gradient-to-br ${getGradient(app.position)} p-4`}>
-                              <h3 className="font-semibold text-white text-lg leading-tight line-clamp-2">
+                              <h3 className="font-semibold text-white text-lg leading-tight line-clamp-2 flex items-center gap-2">
+                                <img src={getAvatarUrl(app.position, 'thumbs')} className="w-5 h-5 rounded-full bg-white/20 shrink-0" alt="" />
                                 {app.position}
                               </h3>
                               <p className="text-white/90 text-sm mt-1">{app.section}</p>
@@ -457,7 +459,7 @@ export default function Admin() {
                               {/* Avatar */}
                               <div className="absolute bottom-4 right-4">
                                 <img
-                                  src={getAvatarUrl(app.full_name)}
+                                  src={getAvatarUrl(app.full_name, 'notionists')}
                                   alt={app.full_name}
                                   className="w-16 h-16 rounded-full border-4 border-white/30 bg-white shadow-lg"
                                 />
@@ -505,7 +507,7 @@ export default function Admin() {
                             onClick={() => setSelectedApplication(app)}
                           >
                             <img
-                              src={getAvatarUrl(app.full_name)}
+                              src={getAvatarUrl(app.full_name, 'notionists')}
                               alt={app.full_name}
                               className="w-10 h-10 rounded-full bg-secondary"
                             />
@@ -513,7 +515,8 @@ export default function Admin() {
                               <p className="font-medium text-foreground">{app.full_name}</p>
                               <p className="text-sm text-muted-foreground">{app.email}</p>
                             </div>
-                            <span className={`text-sm font-medium px-3 py-1 rounded-full w-fit bg-gradient-to-r ${getGradient(app.position)} text-white`}>
+                            <span className={`text-sm font-medium px-3 py-1 rounded-full w-fit bg-gradient-to-r ${getGradient(app.position)} text-white flex items-center gap-1.5`}>
+                              <img src={getAvatarUrl(app.position, 'thumbs')} className="w-4 h-4 rounded-full bg-white/20" alt="" />
                               {app.position}
                             </span>
                             <span className="text-sm text-muted-foreground">{app.section}</span>
