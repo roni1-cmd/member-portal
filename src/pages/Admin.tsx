@@ -41,6 +41,7 @@ export default function Admin() {
   const [activeView, setActiveView] = useState<AdminView>("applications");
 
   useEffect(() => {
+    document.title = "ANG SILAKBO - Membership Portal";
     fetchApplications();
   }, []);
 
@@ -125,9 +126,11 @@ export default function Admin() {
                         onClick={() => setActiveView("applications")}
                         className="h-14 px-6 rounded-r-full rounded-l-none group-data-[collapsible=icon]:rounded-md text-foreground hover:bg-secondary group cursor-pointer"
                       >
-                        <div className={`w-8 h-8 rounded-full ${getInitialColor(position)} text-white flex items-center justify-center text-sm font-bold shrink-0`}>
-                          {position.charAt(0)}
-                        </div>
+                        <img
+                          src={getAvatarUrl(position)}
+                          alt={position}
+                          className="w-8 h-8 rounded-full shrink-0 object-cover"
+                        />
                         <div className="ml-3 min-w-0 flex-1 group-data-[collapsible=icon]:hidden">
                           <p className="text-sm font-medium truncate">{position}</p>
                           <p className="text-xs text-muted-foreground">{apps.length} applicant{apps.length !== 1 ? "s" : ""}</p>
@@ -207,8 +210,12 @@ export default function Admin() {
                 <div className="flex-1 min-w-0">
                   {/* Title Section */}
                   <div className="flex items-start gap-4 mb-6">
-                    <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${getGradient(selectedApplication.position)} flex items-center justify-center shrink-0`}>
-                      <Briefcase className="w-6 h-6 text-white" />
+                    <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${getGradient(selectedApplication.position)} flex items-center justify-center shrink-0 overflow-hidden`}>
+                      <img
+                        src={getAvatarUrl(selectedApplication.position)}
+                        alt={selectedApplication.position}
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                     <div>
                       <h1 className="font-sans font-bold text-2xl text-foreground">

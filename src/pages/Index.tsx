@@ -28,6 +28,10 @@ const Index = () => {
   const [charIndex, setCharIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
 
+  useEffect(() => {
+    document.title = "Join Ang Silakbo";
+  }, []);
+
   const openModal = (team: TeamType) => {
     setSelectedTeam(team);
     setIsModalOpen(true);
