@@ -32,8 +32,8 @@ export const getGradient = (position: string) => {
   return positionGradients[position] || "from-accent to-accent/80";
 };
 
-export const getAvatarUrl = (name: string) => {
-  return `https://api.dicebear.com/7.x/thumbs/svg?seed=${encodeURIComponent(name)}`;
+export const getAvatarUrl = (name: string, style: 'thumbs' | 'notionists' = 'thumbs') => {
+  return `https://api.dicebear.com/7.x/${style}/svg?seed=${encodeURIComponent(name)}`;
 };
 
 export const getInitialColor = (name: string) => {
