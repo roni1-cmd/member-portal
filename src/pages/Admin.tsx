@@ -343,118 +343,179 @@ export default function Admin() {
           </main>
         </div>
 
-        {/* Application Detail Modal */}
+        {/* Application Detail View - Google Classroom Style */}
         {selectedApplication && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div
-              className="absolute inset-0 bg-foreground/50 backdrop-blur-sm"
-              onClick={() => setSelectedApplication(null)}
-            />
-            <div className="relative bg-card rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
-              {/* Modal Header with Gradient */}
-              <div className={`relative bg-gradient-to-br ${getGradient(selectedApplication.position)} p-6 text-white`}>
-                <button
-                  onClick={() => setSelectedApplication(null)}
-                  className="absolute top-4 right-4 p-2 hover:bg-white/20 rounded-lg transition-colors"
-                >
-                  <ArrowLeft className="w-5 h-5" />
-                </button>
-                <div className="flex items-end gap-4">
-                  <img
-                    src={getAvatarUrl(selectedApplication.full_name)}
-                    alt={selectedApplication.full_name}
-                    className="w-20 h-20 rounded-full border-4 border-white/30 bg-white shadow-lg"
-                  />
-                  <div>
-                    <span className="text-sm font-medium text-white/80 uppercase tracking-wider">
-                      {selectedApplication.position}
-                    </span>
-                    <h2 className="font-display text-2xl mt-1">
-                      {selectedApplication.full_name}
-                    </h2>
-                    <p className="text-white/80">{selectedApplication.section}</p>
+          <div className="fixed inset-0 z-50 bg-background overflow-y-auto">
+            {/* Top Bar */}
+            <header className="sticky top-0 z-10 bg-card border-b border-border px-4 py-3 flex items-center gap-4">
+              <button
+                onClick={() => setSelectedApplication(null)}
+                className="p-2 hover:bg-secondary rounded-full transition-colors"
+              >
+                <ArrowLeft className="w-5 h-5 text-foreground" />
+              </button>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-medium text-foreground truncate">{selectedApplication.position}</p>
+                <p className="text-xs text-muted-foreground truncate">{selectedApplication.section}</p>
+              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="p-2 hover:bg-secondary rounded-full transition-colors">
+                    <MoreVertical className="w-5 h-5 text-muted-foreground" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => window.open(`mailto:${selectedApplication.email}`)}>
+                    Send Email
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </header>
+
+            {/* Content Area */}
+            <div className="max-w-5xl mx-auto px-4 py-8 flex flex-col lg:flex-row gap-8">
+              {/* Left - Main Content */}
+              <div className="flex-1 min-w-0">
+                {/* Title Section */}
+                <div className="flex items-start gap-4 mb-6">
+                  <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${getGradient(selectedApplication.position)} flex items-center justify-center shrink-0`}>
+                    <Briefcase className="w-6 h-6 text-white" />
                   </div>
+                  <div>
+                    <h1 className="font-sans font-bold text-2xl text-foreground">
+                      {selectedApplication.full_name}
+                    </h1>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {selectedApplication.section} • {formatDate(selectedApplication.created_at)}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="h-px bg-border mb-6" />
+
+                {/* Application Details */}
+                <div className="space-y-6">
+                  {/* Contact */}
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <Mail className="w-5 h-5 text-muted-foreground" />
+                      <a href={`mailto:${selectedApplication.email}`} className="text-accent hover:underline">
+                        {selectedApplication.email}
+                      </a>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Phone className="w-5 h-5 text-muted-foreground" />
+                      <span className="text-foreground">{selectedApplication.phone_number}</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <MapPin className="w-5 h-5 text-muted-foreground" />
+                      <span className="text-foreground">{selectedApplication.complete_address}</span>
+                    </div>
+                  </div>
+
+                  <div className="h-px bg-border" />
+
+                  {/* Experience */}
+                  <div>
+                    <h3 className="font-sans font-semibold text-foreground mb-3 flex items-center gap-2">
+                      <Users className="w-5 h-5 text-muted-foreground" />
+                      Relevant Experience
+                    </h3>
+                    <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed pl-7">
+                      {selectedApplication.relevant_experience}
+                    </p>
+                  </div>
+
+                  {/* Portfolio */}
+                  {selectedApplication.portfolio_link && (
+                    <>
+                      <div className="h-px bg-border" />
+                      <div>
+                        <h3 className="font-sans font-semibold text-foreground mb-3 flex items-center gap-2">
+                          <ExternalLink className="w-5 h-5 text-muted-foreground" />
+                          Portfolio
+                        </h3>
+                        <a
+                          href={selectedApplication.portfolio_link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-accent hover:underline break-all pl-7"
+                        >
+                          {selectedApplication.portfolio_link}
+                        </a>
+                      </div>
+                    </>
+                  )}
+
+                  {/* Additional Message */}
+                  {selectedApplication.additional_message && (
+                    <>
+                      <div className="h-px bg-border" />
+                      <div>
+                        <h3 className="font-sans font-semibold text-foreground mb-3">Additional Message</h3>
+                        <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">
+                          {selectedApplication.additional_message}
+                        </p>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
 
-              {/* Modal Body */}
-              <div className="p-6 space-y-6">
-                {/* Contact Info */}
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <div className="flex items-start gap-3">
-                    <Mail className="w-5 h-5 text-accent mt-0.5" />
-                    <div>
-                      <p className="text-sm font-medium text-foreground">Email</p>
-                      <p className="text-muted-foreground">{selectedApplication.email}</p>
+              {/* Right - Sidebar Card */}
+              <div className="lg:w-72 shrink-0 space-y-4">
+                {/* Applicant Info Card */}
+                <div className="bg-card border border-border rounded-lg p-5">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-sans font-semibold text-foreground">Applicant Info</h3>
+                    <span className={`text-xs font-medium px-2.5 py-1 rounded-full bg-gradient-to-r ${getGradient(selectedApplication.position)} text-white`}>
+                      {selectedApplication.position}
+                    </span>
+                  </div>
+
+                  {/* Avatar & Name */}
+                  <div className="flex items-center gap-3 mb-4">
+                    <img
+                      src={getAvatarUrl(selectedApplication.full_name)}
+                      alt={selectedApplication.full_name}
+                      className="w-10 h-10 rounded-full bg-secondary"
+                    />
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-foreground truncate">{selectedApplication.full_name}</p>
+                      <p className="text-xs text-muted-foreground truncate">{selectedApplication.email}</p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-3">
-                    <Phone className="w-5 h-5 text-accent mt-0.5" />
+
+                  <div className="h-px bg-border mb-4" />
+
+                  {/* Details */}
+                  <div className="space-y-3 text-sm">
                     <div>
-                      <p className="text-sm font-medium text-foreground">Phone</p>
-                      <p className="text-muted-foreground">{selectedApplication.phone_number}</p>
+                      <p className="text-muted-foreground">Section</p>
+                      <p className="font-medium text-foreground">{selectedApplication.section}</p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground">Referral Source</p>
+                      <p className="font-medium text-foreground">{selectedApplication.referral_source}</p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground">Submitted</p>
+                      <p className="font-medium text-foreground">{formatShortDate(selectedApplication.created_at)}</p>
                     </div>
                   </div>
-                </div>
 
-                <div className="flex items-start gap-3">
-                  <MapPin className="w-5 h-5 text-accent mt-0.5" />
-                  <div>
-                    <p className="text-sm font-medium text-foreground">Address</p>
-                    <p className="text-muted-foreground">{selectedApplication.complete_address}</p>
-                  </div>
-                </div>
+                  <div className="h-px bg-border my-4" />
 
-                {/* Experience */}
-                <div>
-                  <h4 className="font-semibold text-foreground mb-2 flex items-center gap-2">
-                    <Briefcase className="w-4 h-4 text-accent" />
-                    Relevant Experience
-                  </h4>
-                  <p className="text-muted-foreground bg-secondary/50 p-4 rounded-lg whitespace-pre-wrap">
-                    {selectedApplication.relevant_experience}
-                  </p>
-                </div>
-
-                {/* Portfolio */}
-                {selectedApplication.portfolio_link && (
-                  <div>
-                    <h4 className="font-semibold text-foreground mb-2 flex items-center gap-2">
-                      <ExternalLink className="w-4 h-4 text-accent" />
-                      Portfolio
-                    </h4>
-                    <a
-                      href={selectedApplication.portfolio_link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-accent hover:underline break-all"
+                  {/* Action Buttons */}
+                  <div className="space-y-2">
+                    <button
+                      onClick={() => window.open(`mailto:${selectedApplication.email}`)}
+                      className="w-full py-2 px-4 border border-accent text-accent rounded-md text-sm font-medium hover:bg-accent/5 transition-colors"
                     >
-                      {selectedApplication.portfolio_link}
-                    </a>
-                  </div>
-                )}
-
-                {/* Additional Info */}
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm font-medium text-foreground">Referral Source</p>
-                    <p className="text-muted-foreground">{selectedApplication.referral_source}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-foreground">Submitted</p>
-                    <p className="text-muted-foreground">{formatDate(selectedApplication.created_at)}</p>
+                      Contact Applicant
+                    </button>
                   </div>
                 </div>
-
-                {/* Additional Message */}
-                {selectedApplication.additional_message && (
-                  <div>
-                    <h4 className="font-semibold text-foreground mb-2">Additional Message</h4>
-                    <p className="text-muted-foreground bg-secondary/50 p-4 rounded-lg whitespace-pre-wrap">
-                      {selectedApplication.additional_message}
-                    </p>
-                  </div>
-                )}
               </div>
             </div>
           </div>
