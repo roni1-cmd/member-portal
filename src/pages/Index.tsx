@@ -12,11 +12,13 @@ const slides = [slide1, slide2, slide3];
 
 const typingPhrases = [
   "I want to apply as 'Broadcaster'",
-  "I want to apply as 'Feature Writer'",
-  "I want to apply as 'Editorial Writer'",
-  "I want to apply as 'Photojournalist'",
-  "I want to apply as 'Layout Artist'",
+  "Hmm maybe as 'Feature Writer'",
+  "I feel like I want to be an 'Editorial Writer'",
+  "I want to be a 'Photojournalist'",
+  "Maybe I could be a 'Layout Artist'",
   "I want to apply as 'Video Editor'",
+  "I want to develop my skills as a 'News Writer'",
+  "ANG SILAKBO"
 ];
 
 const Index = () => {
