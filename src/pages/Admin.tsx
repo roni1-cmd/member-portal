@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/sidebar";
 import { AdminCalendar } from "@/components/admin/AdminCalendar";
 import { AdminSettings } from "@/components/admin/AdminSettings";
+import { PositionView } from "@/components/admin/PositionView";
 import {
   Application,
   AdminView,
@@ -39,6 +40,7 @@ export default function Admin() {
   const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [activeView, setActiveView] = useState<AdminView>("applications");
+  const [selectedPosition, setSelectedPosition] = useState<string | null>(null);
 
   useEffect(() => {
     document.title = "ANG SILAKBO - Membership Portal";
@@ -91,7 +93,10 @@ export default function Admin() {
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton
-                      onClick={() => setActiveView("calendar")}
+                      onClick={() => {
+                        setActiveView("calendar");
+                        setSelectedPosition(null);
+                      }}
                       className={`h-12 px-6 rounded-r-full rounded-l-none group-data-[collapsible=icon]:rounded-md cursor-pointer ${
                         activeView === "calendar"
                           ? "bg-accent/10 text-accent font-medium hover:bg-accent/15"
@@ -113,7 +118,10 @@ export default function Admin() {
             <SidebarGroup>
               <SidebarGroupLabel
                 className="px-6 text-xs font-medium text-muted-foreground uppercase tracking-wider flex items-center justify-between cursor-pointer hover:text-foreground"
-                onClick={() => setActiveView("applications")}
+                onClick={() => {
+                  setActiveView("applications");
+                  setSelectedPosition(null);
+                }}
               >
                 <span>Applications</span>
                 <span className="text-accent text-xs">{applications.length}</span>
@@ -123,8 +131,13 @@ export default function Admin() {
                   {Object.entries(applicationsByPosition).map(([position, apps]) => (
                     <SidebarMenuItem key={position}>
                       <SidebarMenuButton
-                        onClick={() => setActiveView("applications")}
-                        className="h-14 px-6 rounded-r-full rounded-l-none group-data-[collapsible=icon]:rounded-md text-foreground hover:bg-secondary group cursor-pointer"
+                        onClick={() => {
+                          setActiveView("applications");
+                          setSelectedPosition(position);
+                        }}
+                        className={`h-14 px-6 rounded-r-full rounded-l-none group-data-[collapsible=icon]:rounded-md text-foreground hover:bg-secondary group cursor-pointer ${
+                          selectedPosition === position ? "bg-accent/10 text-accent font-medium hover:bg-accent/15" : ""
+                        }`}
                       >
                         <img
                           src={getAvatarUrl(position, 'thumbs')}
@@ -157,7 +170,10 @@ export default function Admin() {
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton
-                      onClick={() => setActiveView("settings")}
+                      onClick={() => {
+                        setActiveView("settings");
+                        setSelectedPosition(null);
+                      }}
                       className={`h-12 px-6 rounded-r-full rounded-l-none group-data-[collapsible=icon]:rounded-md cursor-pointer ${
                         activeView === "settings"
                           ? "bg-accent/10 text-accent font-medium hover:bg-accent/15"
@@ -369,8 +385,8 @@ export default function Admin() {
                     <span className="font-sans font-bold text-xl text-foreground tracking-tight">ANG SILAKBO</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    {/* View Toggle - only show for applications view */}
-                    {activeView === "applications" && (
+                    {/* View Toggle - only show for applications view when no position is selected */}
+                    {activeView === "applications" && !selectedPosition && (
                       <div className="flex items-center bg-secondary rounded-lg p-1">
                         <button
                           onClick={() => setViewMode("grid")}
@@ -419,113 +435,121 @@ export default function Admin() {
 
                 {/* Applications View */}
                 {activeView === "applications" && (
-                  <>
-                    {/* Stats */}
-                    <div className="mb-6">
-                      <p className="text-muted-foreground">
-                        {applications.length} total application{applications.length !== 1 ? "s" : ""} received
-                      </p>
-                    </div>
-
-                    {loading ? (
-                      <div className="text-center py-20">
-                        <div className="w-8 h-8 border-4 border-accent border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-                        <p className="text-muted-foreground">Loading applications...</p>
+                  selectedPosition ? (
+                    <PositionView
+                      position={selectedPosition}
+                      applications={applicationsByPosition[selectedPosition] || []}
+                      onSelectApplication={setSelectedApplication}
+                    />
+                  ) : (
+                    <>
+                      {/* Stats */}
+                      <div className="mb-6">
+                        <p className="text-muted-foreground">
+                          {applications.length} total application{applications.length !== 1 ? "s" : ""} received
+                        </p>
                       </div>
-                    ) : applications.length === 0 ? (
-                      <div className="text-center py-20 bg-card rounded-2xl border border-border">
-                        <Briefcase className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                        <h3 className="font-display text-xl text-foreground mb-2">No Applications Yet</h3>
-                        <p className="text-muted-foreground">Applications will appear here once submitted.</p>
-                      </div>
-                    ) : viewMode === "grid" ? (
-                      /* Grid View */
-                      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                        {applications.map((app) => (
-                          <div
-                            key={app.id}
-                            className="bg-card rounded-xl overflow-hidden hover:shadow-lg transition-all cursor-pointer group border border-border"
-                            onClick={() => setSelectedApplication(app)}
-                          >
-                            {/* Gradient Header */}
-                            <div className={`relative h-32 bg-gradient-to-br ${getGradient(app.position)} p-4`}>
-                              <h3 className="font-semibold text-white text-lg leading-tight line-clamp-2 flex items-center gap-2">
-                                <img src={getAvatarUrl(app.position, 'thumbs')} className="w-5 h-5 rounded-full bg-white/20 shrink-0" alt="" />
-                                {app.position}
-                              </h3>
-                              <p className="text-white/90 text-sm mt-1">{app.section}</p>
-                              <p className="text-white/80 text-sm">{app.full_name}</p>
 
-                              {/* Avatar */}
-                              <div className="absolute bottom-4 right-4">
-                                <img
-                                  src={getAvatarUrl(app.full_name, 'notionists')}
-                                  alt={app.full_name}
-                                  className="w-16 h-16 rounded-full border-4 border-white/30 bg-white shadow-lg"
-                                />
+                      {loading ? (
+                        <div className="text-center py-20">
+                          <div className="w-8 h-8 border-4 border-accent border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+                          <p className="text-muted-foreground">Loading applications...</p>
+                        </div>
+                      ) : applications.length === 0 ? (
+                        <div className="text-center py-20 bg-card rounded-2xl border border-border">
+                          <Briefcase className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                          <h3 className="font-display text-xl text-foreground mb-2">No Applications Yet</h3>
+                          <p className="text-muted-foreground">Applications will appear here once submitted.</p>
+                        </div>
+                      ) : viewMode === "grid" ? (
+                        /* Grid View */
+                        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                          {applications.map((app) => (
+                            <div
+                              key={app.id}
+                              className="bg-card rounded-xl overflow-hidden hover:shadow-lg transition-all cursor-pointer group border border-border"
+                              onClick={() => setSelectedApplication(app)}
+                            >
+                              {/* Gradient Header */}
+                              <div className={`relative h-32 bg-gradient-to-br ${getGradient(app.position)} p-4`}>
+                                <h3 className="font-semibold text-white text-lg leading-tight line-clamp-2 flex items-center gap-2">
+                                  <img src={getAvatarUrl(app.position, 'thumbs')} className="w-5 h-5 rounded-full bg-white/20 shrink-0" alt="" />
+                                  {app.position}
+                                </h3>
+                                <p className="text-white/90 text-sm mt-1">{app.section}</p>
+                                <p className="text-white/80 text-sm">{app.full_name}</p>
+
+                                {/* Avatar */}
+                                <div className="absolute bottom-4 right-4">
+                                  <img
+                                    src={getAvatarUrl(app.full_name, 'notionists')}
+                                    alt={app.full_name}
+                                    className="w-16 h-16 rounded-full border-4 border-white/30 bg-white shadow-lg"
+                                  />
+                                </div>
+                              </div>
+
+                              {/* Card Footer */}
+                              <div className="p-4 flex items-center justify-between">
+                                <span className="text-xs text-muted-foreground">
+                                  {formatShortDate(app.created_at)}
+                                </span>
+                                <DropdownMenu>
+                                  <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                                    <button className="p-1 hover:bg-secondary rounded-full transition-colors">
+                                      <MoreVertical className="w-5 h-5 text-muted-foreground" />
+                                    </button>
+                                  </DropdownMenuTrigger>
+                                  <DropdownMenuContent align="end">
+                                    <DropdownMenuItem onClick={() => setSelectedApplication(app)}>
+                                      View Details
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => window.open(`mailto:${app.email}`)}>
+                                      Send Email
+                                    </DropdownMenuItem>
+                                  </DropdownMenuContent>
+                                </DropdownMenu>
                               </div>
                             </div>
-
-                            {/* Card Footer */}
-                            <div className="p-4 flex items-center justify-between">
-                              <span className="text-xs text-muted-foreground">
-                                {formatShortDate(app.created_at)}
-                              </span>
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                                  <button className="p-1 hover:bg-secondary rounded-full transition-colors">
-                                    <MoreVertical className="w-5 h-5 text-muted-foreground" />
-                                  </button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                  <DropdownMenuItem onClick={() => setSelectedApplication(app)}>
-                                    View Details
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem onClick={() => window.open(`mailto:${app.email}`)}>
-                                    Send Email
-                                  </DropdownMenuItem>
-                                </DropdownMenuContent>
-                              </DropdownMenu>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      /* List View */
-                      <div className="bg-card rounded-xl border border-border overflow-hidden">
-                        <div className="grid grid-cols-[auto_1fr_1fr_1fr_auto] gap-4 p-4 bg-secondary/50 border-b border-border text-sm font-medium text-muted-foreground">
-                          <span className="w-10"></span>
-                          <span>Applicant</span>
-                          <span>Position</span>
-                          <span>Section</span>
-                          <span>Date</span>
+                          ))}
                         </div>
-                        {applications.map((app) => (
-                          <div
-                            key={app.id}
-                            className="grid grid-cols-[auto_1fr_1fr_1fr_auto] gap-4 p-4 border-b border-border last:border-0 hover:bg-secondary/30 cursor-pointer transition-colors items-center"
-                            onClick={() => setSelectedApplication(app)}
-                          >
-                            <img
-                              src={getAvatarUrl(app.full_name, 'notionists')}
-                              alt={app.full_name}
-                              className="w-10 h-10 rounded-full bg-secondary"
-                            />
-                            <div>
-                              <p className="font-medium text-foreground">{app.full_name}</p>
-                              <p className="text-sm text-muted-foreground">{app.email}</p>
-                            </div>
-                            <span className={`text-sm font-medium px-3 py-1 rounded-full w-fit bg-gradient-to-r ${getGradient(app.position)} text-white flex items-center gap-1.5`}>
-                              <img src={getAvatarUrl(app.position, 'thumbs')} className="w-4 h-4 rounded-full bg-white/20" alt="" />
-                              {app.position}
-                            </span>
-                            <span className="text-sm text-muted-foreground">{app.section}</span>
-                            <span className="text-sm text-muted-foreground">{formatShortDate(app.created_at)}</span>
+                      ) : (
+                        /* List View */
+                        <div className="bg-card rounded-xl border border-border overflow-hidden">
+                          <div className="grid grid-cols-[auto_1fr_1fr_1fr_auto] gap-4 p-4 bg-secondary/50 border-b border-border text-sm font-medium text-muted-foreground">
+                            <span className="w-10"></span>
+                            <span>Applicant</span>
+                            <span>Position</span>
+                            <span>Section</span>
+                            <span>Date</span>
                           </div>
-                        ))}
-                      </div>
-                    )}
-                  </>
+                          {applications.map((app) => (
+                            <div
+                              key={app.id}
+                              className="grid grid-cols-[auto_1fr_1fr_1fr_auto] gap-4 p-4 border-b border-border last:border-0 hover:bg-secondary/30 cursor-pointer transition-colors items-center"
+                              onClick={() => setSelectedApplication(app)}
+                            >
+                              <img
+                                src={getAvatarUrl(app.full_name, 'notionists')}
+                                alt={app.full_name}
+                                className="w-10 h-10 rounded-full bg-secondary"
+                              />
+                              <div>
+                                <p className="font-medium text-foreground">{app.full_name}</p>
+                                <p className="text-sm text-muted-foreground">{app.email}</p>
+                              </div>
+                              <span className={`text-sm font-medium px-3 py-1 rounded-full w-fit bg-gradient-to-r ${getGradient(app.position)} text-white flex items-center gap-1.5`}>
+                                <img src={getAvatarUrl(app.position, 'thumbs')} className="w-4 h-4 rounded-full bg-white/20" alt="" />
+                                {app.position}
+                              </span>
+                              <span className="text-sm text-muted-foreground">{app.section}</span>
+                              <span className="text-sm text-muted-foreground">{formatShortDate(app.created_at)}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  )
                 )}
               </main>
             </>
