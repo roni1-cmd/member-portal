@@ -27,6 +27,7 @@ describe("PositionView component", () => {
         position="Layout Artist"
         applications={mockApplications}
         onSelectApplication={vi.fn()}
+        activeTab="Stream"
       />
     );
 
@@ -40,23 +41,22 @@ describe("PositionView component", () => {
         position="Layout Artist"
         applications={mockApplications}
         onSelectApplication={vi.fn()}
+        activeTab="Stream"
       />
     );
 
     expect(screen.getByText(/Jane Doe submitted a new application/i)).toBeDefined();
   });
 
-  it("switches tabs and shows people", async () => {
+  it("shows people when activeTab is People", async () => {
     render(
       <PositionView
         position="Layout Artist"
         applications={mockApplications}
         onSelectApplication={vi.fn()}
+        activeTab="People"
       />
     );
-
-    const peopleTab = screen.getByText("People");
-    fireEvent.click(peopleTab);
 
     expect(screen.getByText("Teachers")).toBeDefined();
     expect(screen.getByText("Applicants")).toBeDefined();
@@ -70,6 +70,7 @@ describe("PositionView component", () => {
         position="Layout Artist"
         applications={mockApplications}
         onSelectApplication={onSelect}
+        activeTab="Stream"
       />
     );
 

@@ -48,9 +48,9 @@ describe("Admin component", () => {
     expect(screen.getByText(/ANG SILAKBO/i)).toBeDefined();
 
     // Check for sidebar items (be more specific)
-    expect(screen.getAllByText(/Home/i)).toBeDefined();
+    expect(screen.getAllByText(/Classes/i)).toBeDefined();
     expect(screen.getAllByText(/Calendar/i)).toBeDefined();
-    expect(screen.getAllByText(/Applications/i)).toBeDefined();
+    expect(screen.getAllByText(/Enrolled/i)).toBeDefined();
   });
 
   it("renders detailed view next to sidebar when application is selected", async () => {
@@ -80,8 +80,8 @@ describe("Admin component", () => {
       </BrowserRouter>
     );
 
-    const homeSpan = container.querySelector('span.group-data-\\[collapsible\\=icon\\]\\:hidden');
-    expect(homeSpan).toBeDefined();
-    expect(homeSpan?.textContent).toBe("Home");
+    const classesSpan = container.querySelector('span.group-data-\\[collapsible\\=icon\\]\\:hidden');
+    expect(classesSpan).toBeDefined();
+    expect(classesSpan?.textContent).toBe("Classes");
   });
 });
