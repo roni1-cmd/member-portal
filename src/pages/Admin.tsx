@@ -27,6 +27,7 @@ import { PositionView } from "@/components/admin/PositionView";
 import {
   Application,
   AdminView,
+  positionGradients,
   getGradient,
   getAvatarUrl,
   getInitialColor,
@@ -38,7 +39,7 @@ export default function Admin() {
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [viewMode, setViewMode] = useState<"grid" | "list" | "categories">("categories");
   const [activeView, setActiveView] = useState<AdminView>("applications");
   const [selectedPosition, setSelectedPosition] = useState<string | null>(null);
 
@@ -389,6 +390,17 @@ export default function Admin() {
                     {activeView === "applications" && !selectedPosition && (
                       <div className="flex items-center bg-secondary rounded-lg p-1">
                         <button
+                          onClick={() => setViewMode("categories")}
+                          className={`p-2 rounded-md transition-all ${
+                            viewMode === "categories"
+                              ? "bg-card text-foreground shadow-sm"
+                              : "text-muted-foreground hover:text-foreground"
+                          }`}
+                          title="Category view"
+                        >
+                          <Briefcase className="w-4 h-4" />
+                        </button>
+                        <button
                           onClick={() => setViewMode("grid")}
                           className={`p-2 rounded-md transition-all ${
                             viewMode === "grid"
@@ -460,6 +472,61 @@ export default function Admin() {
                           <Briefcase className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                           <h3 className="font-display text-xl text-foreground mb-2">No Applications Yet</h3>
                           <p className="text-muted-foreground">Applications will appear here once submitted.</p>
+                        </div>
+                      ) : viewMode === "categories" ? (
+                        /* Category View */
+                        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                          {Array.from(new Set([...Object.keys(positionGradients), ...Object.keys(applicationsByPosition)])).map((position) => {
+                            const apps = applicationsByPosition[position] || [];
+                            return (
+                              <div
+                                key={position}
+                                className="bg-card rounded-xl overflow-hidden hover:shadow-lg transition-all cursor-pointer group border border-border flex flex-col h-full"
+                                onClick={() => setSelectedPosition(position)}
+                              >
+                                {/* Gradient Header */}
+                                <div className={`relative h-24 bg-gradient-to-br ${getGradient(position)} p-4 flex flex-col justify-between`}>
+                                  <div className="flex items-start justify-between">
+                                    <div className="min-w-0">
+                                      <h3 className="font-bold text-white text-lg leading-tight group-hover:underline truncate">
+                                        {position}
+                                      </h3>
+                                      <p className="text-white/80 text-xs mt-0.5">A.Y. 2025-2026</p>
+                                    </div>
+                                    <button className="p-1.5 hover:bg-white/10 rounded-full transition-colors shrink-0">
+                                      <MoreVertical className="w-4 h-4 text-white" />
+                                    </button>
+                                  </div>
+
+                                  {/* Avatar positioned absolutely */}
+                                  <div className="absolute -bottom-6 right-4">
+                                    <img
+                                      src={getAvatarUrl(position, 'thumbs')}
+                                      alt={position}
+                                      className="w-12 h-12 rounded-full border-4 border-card bg-secondary shadow-md object-cover"
+                                    />
+                                  </div>
+                                </div>
+
+                                {/* Card Content */}
+                                <div className="p-4 pt-8 flex-1 flex flex-col">
+                                  <div className="flex-1">
+                                     <p className="text-sm text-muted-foreground">
+                                       {apps.length} applicant{apps.length !== 1 ? "s" : ""}
+                                     </p>
+                                  </div>
+                                  <div className="mt-4 pt-3 border-t border-border flex justify-end gap-1">
+                                      <button className="p-2 hover:bg-secondary rounded-md text-muted-foreground hover:text-foreground transition-colors">
+                                         <Users className="w-4 h-4" />
+                                      </button>
+                                      <button className="p-2 hover:bg-secondary rounded-md text-muted-foreground hover:text-foreground transition-colors">
+                                         <Archive className="w-4 h-4" />
+                                      </button>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
                       ) : viewMode === "grid" ? (
                         /* Grid View */
