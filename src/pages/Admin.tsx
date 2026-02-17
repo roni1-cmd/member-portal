@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Mail, Phone, MapPin, ExternalLink, ArrowLeft, Grid3X3, List, Briefcase, MoreVertical, Home, Users, Settings, Menu, Archive, CalendarDays } from "lucide-react";
+import { Mail, Phone, MapPin, ExternalLink, ArrowLeft, Grid3X3, List, Briefcase, MoreVertical, Home, Users, Settings, Menu, Archive, CalendarDays, LayoutGrid, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import logo from "@/assets/logo.png";
 import {
@@ -42,6 +42,7 @@ export default function Admin() {
   const [viewMode, setViewMode] = useState<"grid" | "list" | "categories">("categories");
   const [activeView, setActiveView] = useState<AdminView>("applications");
   const [selectedPosition, setSelectedPosition] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState("Stream");
 
   useEffect(() => {
     document.title = "ANG SILAKBO - Membership Portal";
@@ -85,11 +86,20 @@ export default function Admin() {
               <SidebarGroupContent>
                 <SidebarMenu>
                   <SidebarMenuItem>
-                    <SidebarMenuButton asChild className="h-12 px-6 rounded-r-full rounded-l-none group-data-[collapsible=icon]:rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground">
-                      <Link to="/">
-                        <Home className="w-5 h-5 mr-4 group-data-[collapsible=icon]:mr-0" />
-                        <span className="group-data-[collapsible=icon]:hidden">Home</span>
-                      </Link>
+                    <SidebarMenuButton
+                      onClick={() => {
+                        setActiveView("applications");
+                        setSelectedPosition(null);
+                        setSelectedApplication(null);
+                      }}
+                      className={`h-12 px-6 rounded-r-full rounded-l-none group-data-[collapsible=icon]:rounded-md cursor-pointer ${
+                        activeView === "applications" && !selectedPosition && !selectedApplication
+                          ? "bg-accent/10 text-accent font-medium hover:bg-accent/15"
+                          : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                      }`}
+                    >
+                      <LayoutGrid className="w-5 h-5 mr-4 group-data-[collapsible=icon]:mr-0" />
+                      <span className="group-data-[collapsible=icon]:hidden">Classes</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
@@ -97,6 +107,7 @@ export default function Admin() {
                       onClick={() => {
                         setActiveView("calendar");
                         setSelectedPosition(null);
+                        setSelectedApplication(null);
                       }}
                       className={`h-12 px-6 rounded-r-full rounded-l-none group-data-[collapsible=icon]:rounded-md cursor-pointer ${
                         activeView === "calendar"
@@ -118,13 +129,14 @@ export default function Admin() {
             {/* Applications Group */}
             <SidebarGroup>
               <SidebarGroupLabel
-                className="px-6 text-xs font-medium text-muted-foreground uppercase tracking-wider flex items-center justify-between cursor-pointer hover:text-foreground"
+                className="px-6 text-xs font-medium text-muted-foreground uppercase tracking-wider flex items-center justify-between cursor-pointer hover:text-foreground group"
                 onClick={() => {
                   setActiveView("applications");
                   setSelectedPosition(null);
+                  setSelectedApplication(null);
                 }}
               >
-                <span>Applications</span>
+                <span>Enrolled</span>
                 <span className="text-accent text-xs">{applications.length}</span>
               </SidebarGroupLabel>
               <SidebarGroupContent>
@@ -376,56 +388,60 @@ export default function Admin() {
           ) : (
             <>
               {/* Header */}
-              <header className="bg-card border-b border-border py-3 px-4 sticky top-0 z-40">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <SidebarTrigger className="p-2 hover:bg-secondary rounded-lg">
+              <header className="bg-card border-b border-border sticky top-0 z-40">
+                <div className="flex items-center justify-between py-3 px-4">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <SidebarTrigger className="p-2 hover:bg-secondary rounded-lg shrink-0">
                       <Menu className="w-5 h-5" />
                     </SidebarTrigger>
-                    <img src={logo} alt="Ang Silakbo Logo" className="w-8 h-8 object-contain" />
-                    <span className="font-sans font-bold text-xl text-foreground tracking-tight">ANG SILAKBO</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {/* View Toggle - only show for applications view when no position is selected */}
-                    {activeView === "applications" && !selectedPosition && (
-                      <div className="flex items-center bg-secondary rounded-lg p-1">
-                        <button
-                          onClick={() => setViewMode("categories")}
-                          className={`p-2 rounded-md transition-all ${
-                            viewMode === "categories"
-                              ? "bg-card text-foreground shadow-sm"
-                              : "text-muted-foreground hover:text-foreground"
-                          }`}
-                          title="Category view"
+                    {!selectedPosition ? (
+                      <div className="flex items-center gap-3">
+                        <img src={logo} alt="Ang Silakbo Logo" className="w-8 h-8 object-contain" />
+                        <span className="font-sans font-bold text-xl text-foreground tracking-tight">ANG SILAKBO</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2 overflow-hidden">
+                        <span
+                          className="font-sans font-medium text-lg text-muted-foreground cursor-pointer hover:text-foreground transition-colors shrink-0"
+                          onClick={() => {
+                            setSelectedPosition(null);
+                            setSelectedApplication(null);
+                          }}
                         >
-                          <Briefcase className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => setViewMode("grid")}
-                          className={`p-2 rounded-md transition-all ${
-                            viewMode === "grid"
-                              ? "bg-card text-foreground shadow-sm"
-                              : "text-muted-foreground hover:text-foreground"
-                          }`}
-                          title="Grid view"
-                        >
-                          <Grid3X3 className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => setViewMode("list")}
-                          className={`p-2 rounded-md transition-all ${
-                            viewMode === "list"
-                              ? "bg-card text-foreground shadow-sm"
-                              : "text-muted-foreground hover:text-foreground"
-                          }`}
-                          title="List view"
-                        >
-                          <List className="w-4 h-4" />
-                        </button>
+                          ANG SILAKBO
+                        </span>
+                        <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
+                        <span className="font-sans font-bold text-lg text-foreground truncate">
+                          {selectedPosition}
+                        </span>
                       </div>
                     )}
                   </div>
+                  <div className="flex items-center gap-2">
+                    {/* Action buttons could go here */}
+                  </div>
                 </div>
+
+                {/* Position View Tabs */}
+                {selectedPosition && activeView === "applications" && (
+                  <div className="flex justify-center border-t border-border/10">
+                    <nav className="flex gap-4 sm:gap-8 px-4 h-12">
+                      {["Stream", "Classwork", "People"].map((tab) => (
+                        <button
+                          key={tab}
+                          onClick={() => setActiveTab(tab)}
+                          className={`px-4 h-full border-b-4 font-sans font-medium text-sm transition-all relative top-[2px] ${
+                            activeTab === tab
+                              ? "border-accent text-accent"
+                              : "border-transparent text-muted-foreground hover:text-foreground"
+                          }`}
+                        >
+                          {tab}
+                        </button>
+                      ))}
+                    </nav>
+                  </div>
+                )}
               </header>
 
               <main className="flex-1 p-6 overflow-auto">
@@ -452,6 +468,7 @@ export default function Admin() {
                       position={selectedPosition}
                       applications={applicationsByPosition[selectedPosition] || []}
                       onSelectApplication={setSelectedApplication}
+                      activeTab={activeTab}
                     />
                   ) : (
                     <>

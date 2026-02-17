@@ -6,35 +6,13 @@ interface PositionViewProps {
   position: string;
   applications: Application[];
   onSelectApplication: (app: Application) => void;
+  activeTab: string;
 }
 
-export function PositionView({ position, applications, onSelectApplication }: PositionViewProps) {
-  const [activeTab, setActiveTab] = useState("Stream");
-
+export function PositionView({ position, applications, onSelectApplication, activeTab }: PositionViewProps) {
   return (
-    <div className="flex-1 flex flex-col min-w-0 bg-background overflow-hidden">
-      {/* Google Classroom-style Tab Header */}
-      <header className="bg-card border-b border-border sticky top-0 z-30">
-        <div className="flex justify-center h-16">
-          <nav className="flex gap-8 px-4 h-full">
-            {["Stream", "Classwork", "People"].map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`px-4 h-full border-b-4 font-sans font-medium text-sm transition-all relative top-[2px] ${
-                  activeTab === tab
-                    ? "border-accent text-accent"
-                    : "border-transparent text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
-                }`}
-              >
-                {tab}
-              </button>
-            ))}
-          </nav>
-        </div>
-      </header>
-
-      <div className="flex-1 overflow-y-auto">
+    <div className="flex-1 flex flex-col min-w-0 bg-background">
+      <div className="flex-1">
         <div className="max-w-5xl mx-auto p-6 space-y-6">
           {activeTab === "Stream" && (
             <>
@@ -88,24 +66,31 @@ export function PositionView({ position, applications, onSelectApplication }: Po
                     <div
                       key={app.id}
                       onClick={() => onSelectApplication(app)}
-                      className="bg-card border border-border rounded-xl p-4 shadow-sm flex items-start gap-4 cursor-pointer hover:shadow-md transition-all group"
+                      className="bg-card border border-border rounded-xl p-5 shadow-sm flex items-start gap-4 cursor-pointer hover:shadow-md transition-all group border-l-4 border-l-transparent hover:border-l-accent"
                     >
-                      <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center shrink-0">
-                        <ClipboardList className="w-5 h-5 text-white" />
+                      <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center shrink-0 group-hover:bg-accent/20 transition-colors">
+                        <ClipboardList className="w-5 h-5 text-accent" />
                       </div>
-                      <div className="flex-1 min-w-0 py-0.5">
-                        <div className="flex items-center justify-between gap-4">
-                          <p className="text-sm font-medium text-foreground group-hover:text-accent transition-colors">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-4 mb-1">
+                          <h4 className="text-sm font-semibold text-foreground group-hover:text-accent transition-colors">
                             {app.full_name} submitted a new application
-                          </p>
-                          <span className="text-xs text-muted-foreground shrink-0">{formatShortDate(app.created_at)}</span>
+                          </h4>
+                          <span className="text-xs text-muted-foreground shrink-0 font-medium">{formatShortDate(app.created_at)}</span>
                         </div>
-                        <p className="text-xs text-muted-foreground mt-1 line-clamp-1 italic">
-                          "{app.additional_message || "I am interested in joining Ang Silakbo..."}"
-                        </p>
+                        <div className="bg-secondary/30 rounded-lg p-3 mt-2">
+                           <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed italic">
+                            "{app.additional_message || "I am interested in joining Ang Silakbo. I believe my skills and experience would be a great fit for this position."}"
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-4 mt-3">
+                           <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60 bg-secondary px-2 py-0.5 rounded">
+                             {app.section}
+                           </span>
+                        </div>
                       </div>
                       <button
-                        className="p-1 hover:bg-secondary rounded-full opacity-0 group-hover:opacity-100 transition-all self-center"
+                        className="p-2 hover:bg-secondary rounded-full opacity-0 group-hover:opacity-100 transition-all"
                         onClick={(e) => {
                           e.stopPropagation();
                         }}
