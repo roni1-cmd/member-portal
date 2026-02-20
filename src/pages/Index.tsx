@@ -139,7 +139,7 @@ const Index = () => {
           </div>
 
           <p className="text-white/70 text-sm mt-6">
-            Join our publication for A.Y. 2025-2026
+            Join us for A.Y. 2026-2027
           </p>
         </div>
 
@@ -180,7 +180,7 @@ const Index = () => {
               <span className="font-bold text-sm text-foreground" style={{ fontFamily: 'Poppins, sans-serif' }}>ANG SILAKBO</span>
             </div>
             <p className="text-xs text-muted-foreground">
-              © {new Date().getFullYear()} Ang Silakbo Publication
+              © {new Date().getFullYear()} Ang Silakbo
             </p>
           </div>
         </div>
