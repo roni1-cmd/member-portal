@@ -15,6 +15,8 @@ const editorialPositions = [
   "Editorial Writer",
   "Local News Writer",
   "Sports News Writer",
+  "Entertainment News Editor",
+  "Entertainment News Writer",
   "Layout Artist",
 ] as const;
 
