@@ -48,7 +48,7 @@ export function PositionView({ position, applications, onSelectApplication }: Po
                   </div>
                   <div className="bg-secondary/30 rounded-lg p-3 mt-2">
                     <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed italic">
-                      "{app.additional_message || "I am interested in joining Ang Silakbo. I believe my skills and experience would be a great fit for this position."}"
+                      {app.relevant_experience}
                     </p>
                   </div>
                   <div className="flex items-center gap-4 mt-3">
