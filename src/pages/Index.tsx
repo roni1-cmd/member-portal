@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { ApplicationModal } from "@/components/ApplicationModal";
+import { TeamTabs } from "@/components/TeamCard";
 import { Facebook, Mail, Send } from "lucide-react";
 import logo from "@/assets/logo.png";
 import slide1 from "@/assets/slide-1.png";
@@ -156,6 +157,9 @@ const Index = () => {
           ))}
         </div>
       </section>
+
+      {/* Team Sections */}
+      <TeamTabs onApply={openModal} />
 
       {/* Footer */}
       <footer className="bg-background border-t border-border">
