@@ -42,7 +42,7 @@ export default function Admin() {
   const [viewMode, setViewMode] = useState<"grid" | "list" | "categories">("categories");
   const [activeView, setActiveView] = useState<AdminView>("applications");
   const [selectedPosition, setSelectedPosition] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState("Stream");
+  
 
   useEffect(() => {
     document.title = "ANG SILAKBO - Membership Portal";
@@ -422,26 +422,6 @@ export default function Admin() {
                   </div>
                 </div>
 
-                {/* Position View Tabs */}
-                {selectedPosition && activeView === "applications" && (
-                  <div className="flex justify-center border-t border-border/10">
-                    <nav className="flex gap-4 sm:gap-8 px-4 h-12">
-                      {["Stream", "Classwork", "People"].map((tab) => (
-                        <button
-                          key={tab}
-                          onClick={() => setActiveTab(tab)}
-                          className={`px-4 h-full border-b-4 font-sans font-medium text-sm transition-all relative top-[2px] ${
-                            activeTab === tab
-                              ? "border-accent text-accent"
-                              : "border-transparent text-muted-foreground hover:text-foreground"
-                          }`}
-                        >
-                          {tab}
-                        </button>
-                      ))}
-                    </nav>
-                  </div>
-                )}
               </header>
 
               <main className="flex-1 p-6 overflow-auto">
@@ -468,7 +448,6 @@ export default function Admin() {
                       position={selectedPosition}
                       applications={applicationsByPosition[selectedPosition] || []}
                       onSelectApplication={setSelectedApplication}
-                      activeTab={activeTab}
                     />
                   ) : (
                     <>
@@ -508,7 +487,7 @@ export default function Admin() {
                                       <h3 className="font-bold text-white text-lg leading-tight group-hover:underline truncate">
                                         {position}
                                       </h3>
-                                      <p className="text-white/80 text-xs mt-0.5">A.Y. 2025-2026</p>
+                                      
                                     </div>
                                     <button className="p-1.5 hover:bg-white/10 rounded-full transition-colors shrink-0">
                                       <MoreVertical className="w-4 h-4 text-white" />

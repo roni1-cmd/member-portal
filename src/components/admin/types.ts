@@ -21,6 +21,8 @@ export const positionGradients: Record<string, string> = {
   "Editorial Writer": "from-teal-400 to-teal-600",
   "Local News Writer": "from-emerald-400 to-emerald-600",
   "Sports News Writer": "from-orange-400 to-orange-600",
+  "Entertainment News Editor": "from-violet-400 to-violet-600",
+  "Entertainment News Writer": "from-fuchsia-400 to-fuchsia-600",
   "Layout Artist": "from-purple-400 to-purple-600",
   "Photojournalist": "from-pink-400 to-pink-600",
   "Video Journalist": "from-rose-400 to-rose-600",
