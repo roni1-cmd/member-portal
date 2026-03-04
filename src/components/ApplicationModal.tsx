@@ -64,9 +64,10 @@ export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModal
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [selectedTeam, setSelectedTeam] = useState<TeamType>(teamType);
 
-  const positions = teamType === "editorial" ? editorialPositions : productionPositions;
-  const teamName = teamType === "editorial" ? "Editorial Board" : "Production Team";
+  const positions = selectedTeam === "editorial" ? editorialPositions : productionPositions;
+  const teamName = selectedTeam === "editorial" ? "Editorial Board" : "Production Team";
 
   const {
     register,
@@ -256,7 +257,27 @@ export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModal
                 {currentStep === 2 && (
                   <div className="animate-slide-in-right">
                     <h3 className="font-sans font-bold text-xl md:text-2xl mb-1 text-foreground">Position Selection</h3>
-                    <p className="text-muted-foreground font-sans text-sm mb-8">Choose your desired role in the {teamName}</p>
+                    <p className="text-muted-foreground font-sans text-sm mb-6">Choose your team and desired role</p>
+
+                    {/* Team Tabs */}
+                    <div className="flex gap-1 bg-secondary p-1 rounded-xl mb-6">
+                      {(["editorial", "production"] as TeamType[]).map((team) => (
+                        <button
+                          key={team}
+                          type="button"
+                          onClick={() => setSelectedTeam(team)}
+                          className={cn(
+                            "flex-1 py-2 px-3 rounded-lg text-sm font-sans font-medium transition-all duration-200",
+                            selectedTeam === team
+                              ? "bg-background text-foreground shadow-sm"
+                              : "text-muted-foreground hover:text-foreground"
+                          )}
+                        >
+                          {team === "editorial" ? "Editorial Board" : "Production Team"}
+                        </button>
+                      ))}
+                    </div>
+
                     <div className="grid gap-3">
                       {positions.map((position) => (
                         <label
