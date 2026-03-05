@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { AnimatePresence } from "framer-motion";
 import { ApplicationModal } from "@/components/ApplicationModal";
 import { Facebook, Mail, Send } from "lucide-react";
 import logo from "@/assets/logo.png";
@@ -186,11 +187,15 @@ const Index = () => {
         </div>
       </footer>
 
-      <ApplicationModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        teamType={selectedTeam}
-      />
+      <AnimatePresence>
+        {isModalOpen && (
+          <ApplicationModal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            teamType={selectedTeam}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 };
