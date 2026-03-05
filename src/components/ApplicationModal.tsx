@@ -165,17 +165,32 @@ export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModal
     }
   };
 
-  if (!isOpen) return null;
-
   return (
     <motion.div
-      className="fixed inset-0 z-50 flex flex-col bg-background"
+      className="fixed inset-0 z-50 flex flex-col"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.25 }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
       style={{ fontFamily: "'Poppins', sans-serif" }}
     >
+      {/* Blurred overlay backdrop */}
+      <motion.div
+        className="absolute inset-0 bg-background/80 backdrop-blur-sm"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.3 }}
+      />
+      {/* Scaled content panel */}
+      <motion.div
+        className="relative flex flex-col flex-1 bg-background"
+        initial={{ opacity: 0, scale: 0.97, y: 16 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.97, y: 16 }}
+        transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+        style={{ fontFamily: "'Poppins', sans-serif" }}
+      >
       {/* Top Bar */}
       <motion.div
         className="flex items-center justify-between px-6 py-4 border-b border-border"
@@ -560,6 +575,7 @@ export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModal
           </div>
         </footer>
       </div>
+      </motion.div>
     </motion.div>
   );
 }
