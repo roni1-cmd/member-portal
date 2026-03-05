@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Check, ChevronRight, ChevronLeft, Send, X, Facebook, Mail } from "lucide-react";
 import { cn } from "@/lib/utils";
 import logo from "@/assets/logo.png";
+import { motion, AnimatePresence } from "framer-motion";
 
 type TeamType = "editorial" | "production";
 
@@ -60,11 +61,29 @@ interface ApplicationModalProps {
   teamType: TeamType;
 }
 
+const stepVariants = {
+  enter: (direction: number) => ({
+    x: direction > 0 ? 60 : -60,
+    opacity: 0,
+  }),
+  center: {
+    x: 0,
+    opacity: 1,
+    transition: { duration: 0.3, ease: "easeOut" as const },
+  },
+  exit: (direction: number) => ({
+    x: direction > 0 ? -60 : 60,
+    opacity: 0,
+    transition: { duration: 0.2, ease: "easeIn" as const },
+  }),
+};
+
 export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModalProps) {
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState<TeamType>(teamType);
+  const [direction, setDirection] = useState(1);
 
   const positions = selectedTeam === "editorial" ? editorialPositions : productionPositions;
   const teamName = selectedTeam === "editorial" ? "Editorial Board" : "Production Team";
@@ -106,12 +125,14 @@ export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModal
   const nextStep = async () => {
     const isValid = await validateStep(currentStep);
     if (isValid && currentStep < 4) {
+      setDirection(1);
       setCurrentStep(currentStep + 1);
     }
   };
 
   const prevStep = () => {
     if (currentStep > 1) {
+      setDirection(-1);
       setCurrentStep(currentStep - 1);
     }
   };
@@ -147,262 +168,374 @@ export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModal
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-background animate-fade-in">
+    <motion.div
+      className="fixed inset-0 z-50 flex flex-col bg-background"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.25 }}
+      style={{ fontFamily: "'Poppins', sans-serif" }}
+    >
       {/* Top Bar */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+      <motion.div
+        className="flex items-center justify-between px-6 py-4 border-b border-border"
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.3, delay: 0.05 }}
+      >
         <div className="flex items-center gap-3">
           <img src={logo} alt="Ang Silakbo Logo" className="w-7 h-7 object-contain" />
-          <span className="font-sans font-bold text-lg text-foreground tracking-tight">
+          <span className="font-bold text-lg text-foreground tracking-tight" style={{ fontFamily: "'Poppins', sans-serif" }}>
             ANG SILAKBO
           </span>
         </div>
-        <button
+        <motion.button
           onClick={handleClose}
-          className="p-2 rounded-full hover:bg-secondary transition-colors active:scale-95"
+          className="p-2 rounded-full hover:bg-secondary transition-colors"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
         >
           <X className="w-5 h-5 text-muted-foreground" />
-        </button>
-      </div>
+        </motion.button>
+      </motion.div>
 
       {/* Scrollable Content */}
       <div className="flex-1 overflow-y-auto">
         <div className="max-w-2xl mx-auto px-4 py-12 md:py-16">
           {/* Header */}
-          <div className="text-center mb-10">
-            <span className="inline-block px-4 py-1.5 bg-accent/10 text-accent font-sans font-medium text-sm rounded-full mb-5">
+          <motion.div
+            className="text-center mb-10"
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.4, delay: 0.1 }}
+          >
+            <span className="inline-block px-4 py-1.5 bg-accent/10 text-accent font-medium text-sm rounded-full mb-5" style={{ fontFamily: "'Poppins', sans-serif" }}>
               {teamName}
             </span>
-            <h2 className="font-sans font-bold text-3xl md:text-4xl lg:text-5xl text-foreground mb-3">
+            <h2 className="font-bold text-3xl md:text-4xl lg:text-5xl text-foreground mb-3" style={{ fontFamily: "'Poppins', sans-serif" }}>
               Join Our Team
             </h2>
-            <p className="text-muted-foreground font-sans text-base md:text-lg">
-              Complete the form below to apply for A.Y. 2025-2026
+            <p className="text-muted-foreground text-base md:text-lg" style={{ fontFamily: "'Poppins', sans-serif" }}>
+              Complete the form below to apply for A.Y. 2026-2027
             </p>
-          </div>
+          </motion.div>
 
           {/* Step Indicator */}
-          <div className="flex items-center justify-center gap-2 mb-10">
+          <motion.div
+            className="flex items-center justify-center gap-2 mb-10"
+            initial={{ y: 10, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.4, delay: 0.15 }}
+          >
             {stepLabels.map((label, i) => (
               <div key={label} className="flex items-center gap-2">
-                <div
+                <motion.div
                   className={cn(
-                    "w-8 h-8 rounded-full flex items-center justify-center text-sm font-sans font-semibold transition-all duration-300",
+                    "w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-colors duration-300",
                     currentStep > i + 1
                       ? "bg-accent text-accent-foreground"
                       : currentStep === i + 1
                       ? "bg-foreground text-background"
                       : "bg-secondary text-muted-foreground"
                   )}
+                  animate={{
+                    scale: currentStep === i + 1 ? 1.1 : 1,
+                  }}
+                  transition={{ duration: 0.2 }}
+                  style={{ fontFamily: "'Poppins', sans-serif" }}
                 >
                   {currentStep > i + 1 ? <Check className="w-4 h-4" /> : i + 1}
-                </div>
+                </motion.div>
                 <span className={cn(
-                  "text-xs font-sans font-medium hidden sm:block",
+                  "text-xs font-medium hidden sm:block",
                   currentStep >= i + 1 ? "text-foreground" : "text-muted-foreground"
-                )}>
+                )} style={{ fontFamily: "'Poppins', sans-serif" }}>
                   {label}
                 </span>
                 {i < stepLabels.length - 1 && (
-                  <div className={cn(
-                    "w-6 sm:w-10 h-0.5 mx-1",
-                    currentStep > i + 1 ? "bg-accent" : "bg-border"
-                  )} />
+                  <motion.div
+                    className="w-6 sm:w-10 h-0.5 mx-1"
+                    animate={{ backgroundColor: currentStep > i + 1 ? "hsl(var(--accent))" : "hsl(var(--border))" }}
+                    transition={{ duration: 0.3 }}
+                  />
                 )}
               </div>
             ))}
-          </div>
+          </motion.div>
 
-          {isSubmitted ? (
-            <div className="bg-card rounded-2xl p-10 text-center animate-scale-in" style={{ boxShadow: 'var(--shadow-card)' }}>
-              <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-accent/10 flex items-center justify-center">
-                <Check className="w-8 h-8 text-accent" />
-              </div>
-              <h3 className="font-sans font-bold text-2xl md:text-3xl mb-3 text-foreground">Application Submitted!</h3>
-              <p className="text-muted-foreground font-sans leading-relaxed max-w-md mx-auto mb-8">
-                Thank you for your interest in joining Ang Silakbo. We will review your application and get back to you soon.
-              </p>
-              <button onClick={handleClose} className="bg-accent text-accent-foreground font-sans font-semibold px-8 py-3 rounded-full hover:bg-accent/90 transition-all active:scale-95">
-                Close
-              </button>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="bg-card rounded-2xl p-6 md:p-10" style={{ boxShadow: 'var(--shadow-card)' }}>
-                {/* Step 1 */}
-                {currentStep === 1 && (
-                  <div className="animate-slide-in-right">
-                    <h3 className="font-sans font-bold text-xl md:text-2xl mb-1 text-foreground">Personal Information</h3>
-                    <p className="text-muted-foreground font-sans text-sm mb-8">Tell us about yourself</p>
-                    <div className="space-y-5">
-                      <InputField label="Full Name" error={errors.full_name?.message}>
-                        <input {...register("full_name")} className="form-input-pill" placeholder="Juan Dela Cruz" />
-                      </InputField>
-                      <InputField label="Section" error={errors.section?.message}>
-                        <input {...register("section")} className="form-input-pill" placeholder="e.g., 12-STEM A" />
-                      </InputField>
-                      <InputField label="Email Address" error={errors.email?.message}>
-                        <input {...register("email")} type="email" className="form-input-pill" placeholder="your.email@example.com" />
-                      </InputField>
-                      <InputField label="Phone Number" error={errors.phone_number?.message}>
-                        <input {...register("phone_number")} type="tel" className="form-input-pill" placeholder="09XX XXX XXXX" />
-                      </InputField>
-                      <InputField label="Complete Address" error={errors.complete_address?.message}>
-                        <textarea {...register("complete_address")} className="form-input-pill min-h-[100px] resize-none" placeholder="Street, Barangay, City/Municipality, Province" />
-                      </InputField>
-                    </div>
-                  </div>
-                )}
+          <AnimatePresence mode="wait">
+            {isSubmitted ? (
+              <motion.div
+                key="success"
+                className="bg-card rounded-2xl p-10 text-center"
+                style={{ boxShadow: 'var(--shadow-card)', fontFamily: "'Poppins', sans-serif" }}
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+              >
+                <motion.div
+                  className="w-16 h-16 mx-auto mb-6 rounded-full bg-accent/10 flex items-center justify-center"
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+                >
+                  <Check className="w-8 h-8 text-accent" />
+                </motion.div>
+                <h3 className="font-bold text-2xl md:text-3xl mb-3 text-foreground" style={{ fontFamily: "'Poppins', sans-serif" }}>Application Submitted!</h3>
+                <p className="text-muted-foreground leading-relaxed max-w-md mx-auto mb-8" style={{ fontFamily: "'Poppins', sans-serif" }}>
+                  Thank you for your interest in joining Ang Silakbo. We will review your application and get back to you soon.
+                </p>
+                <motion.button
+                  onClick={handleClose}
+                  className="bg-accent text-accent-foreground font-semibold px-8 py-3 rounded-full hover:bg-accent/90 transition-all"
+                  style={{ fontFamily: "'Poppins', sans-serif" }}
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.96 }}
+                >
+                  Close
+                </motion.button>
+              </motion.div>
+            ) : (
+              <form onSubmit={handleSubmit(onSubmit)} key="form">
+                <div className="bg-card rounded-2xl p-6 md:p-10 overflow-hidden" style={{ boxShadow: 'var(--shadow-card)' }}>
+                  <AnimatePresence mode="wait" custom={direction}>
+                    {/* Step 1 */}
+                    {currentStep === 1 && (
+                      <motion.div
+                        key="step1"
+                        custom={direction}
+                        variants={stepVariants}
+                        initial="enter"
+                        animate="center"
+                        exit="exit"
+                      >
+                        <h3 className="font-bold text-xl md:text-2xl mb-1 text-foreground" style={{ fontFamily: "'Poppins', sans-serif" }}>Personal Information</h3>
+                        <p className="text-muted-foreground text-sm mb-8" style={{ fontFamily: "'Poppins', sans-serif" }}>Tell us about yourself</p>
+                        <div className="space-y-5">
+                          <InputField label="Full Name" error={errors.full_name?.message}>
+                            <input {...register("full_name")} className="form-input-pill" placeholder="Juan Dela Cruz" />
+                          </InputField>
+                          <InputField label="Section" error={errors.section?.message}>
+                            <input {...register("section")} className="form-input-pill" placeholder="e.g., 12-STEM A" />
+                          </InputField>
+                          <InputField label="Email Address" error={errors.email?.message}>
+                            <input {...register("email")} type="email" className="form-input-pill" placeholder="your.email@example.com" />
+                          </InputField>
+                          <InputField label="Phone Number" error={errors.phone_number?.message}>
+                            <input {...register("phone_number")} type="tel" className="form-input-pill" placeholder="09XX XXX XXXX" />
+                          </InputField>
+                          <InputField label="Complete Address" error={errors.complete_address?.message}>
+                            <textarea {...register("complete_address")} className="form-input-pill min-h-[100px] resize-none" placeholder="Street, Barangay, City/Municipality, Province" />
+                          </InputField>
+                        </div>
+                      </motion.div>
+                    )}
 
-                {/* Step 2 */}
-                {currentStep === 2 && (
-                  <div className="animate-slide-in-right">
-                    <h3 className="font-sans font-bold text-xl md:text-2xl mb-1 text-foreground">Position Selection</h3>
-                    <p className="text-muted-foreground font-sans text-sm mb-6">Choose your team and desired role</p>
+                    {/* Step 2 */}
+                    {currentStep === 2 && (
+                      <motion.div
+                        key="step2"
+                        custom={direction}
+                        variants={stepVariants}
+                        initial="enter"
+                        animate="center"
+                        exit="exit"
+                      >
+                        <h3 className="font-bold text-xl md:text-2xl mb-1 text-foreground" style={{ fontFamily: "'Poppins', sans-serif" }}>Position Selection</h3>
+                        <p className="text-muted-foreground text-sm mb-6" style={{ fontFamily: "'Poppins', sans-serif" }}>Choose your team and desired role</p>
 
-                    {/* Team Tabs */}
-                    <div className="flex gap-1 bg-secondary p-1 rounded-xl mb-6">
-                      {(["editorial", "production"] as TeamType[]).map((team) => (
-                        <button
-                          key={team}
-                          type="button"
-                          onClick={() => setSelectedTeam(team)}
-                          className={cn(
-                            "flex-1 py-2 px-3 rounded-lg text-sm font-sans font-medium transition-all duration-200",
-                            selectedTeam === team
-                              ? "bg-background text-foreground shadow-sm"
-                              : "text-muted-foreground hover:text-foreground"
-                          )}
-                        >
-                          {team === "editorial" ? "Editorial Board" : "Production Team"}
-                        </button>
-                      ))}
-                    </div>
-
-                    <div className="grid gap-3">
-                      {positions.map((position) => (
-                        <label
-                          key={position}
-                          className={cn(
-                            "flex items-center p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 font-sans",
-                            watch("position") === position
-                              ? "border-accent bg-accent/5"
-                              : "border-border hover:border-accent/40 hover:bg-secondary/50"
-                          )}
-                        >
-                          <input type="radio" {...register("position")} value={position} className="sr-only" />
-                          <div className={cn(
-                            "w-5 h-5 rounded-full border-2 mr-4 flex items-center justify-center transition-all",
-                            watch("position") === position ? "border-accent bg-accent" : "border-muted-foreground"
-                          )}>
-                            {watch("position") === position && <div className="w-2 h-2 rounded-full bg-accent-foreground" />}
-                          </div>
-                          <span className="font-medium text-sm">{position}</span>
-                        </label>
-                      ))}
-                    </div>
-                    {errors.position && <p className="text-destructive text-sm mt-3 font-sans">{errors.position.message}</p>}
-                  </div>
-                )}
-
-                {/* Step 3 */}
-                {currentStep === 3 && (
-                  <div className="animate-slide-in-right">
-                    <h3 className="font-sans font-bold text-xl md:text-2xl mb-1 text-foreground">Experience & Portfolio</h3>
-                    <p className="text-muted-foreground font-sans text-sm mb-8">Share your background and work</p>
-                    <div className="space-y-5">
-                      <InputField label="Relevant Experience" error={errors.relevant_experience?.message}>
-                        <textarea {...register("relevant_experience")} className="form-input-pill min-h-[160px] resize-none" placeholder="Describe your experience in journalism, writing, photography, video production, or any related field..." />
-                      </InputField>
-                      <InputField label="Portfolio Google Drive Link" error={errors.portfolio_link?.message} optional>
-                        <input {...register("portfolio_link")} type="url" className="form-input-pill" placeholder="https://drive.google.com/..." />
-                      </InputField>
-                    </div>
-                  </div>
-                )}
-
-                {/* Step 4 */}
-                {currentStep === 4 && (
-                  <div className="animate-slide-in-right">
-                    <h3 className="font-sans font-bold text-xl md:text-2xl mb-1 text-foreground">Final Details</h3>
-                    <p className="text-muted-foreground font-sans text-sm mb-8">Almost there!</p>
-                    <div className="space-y-5">
-                      <div>
-                        <label className="block text-sm font-sans font-medium mb-3 text-foreground">How did you hear about us? *</label>
-                        <div className="grid gap-3 sm:grid-cols-2">
-                          {referralSources.map((source) => (
-                            <label
-                              key={source}
+                        {/* Team Tabs */}
+                        <div className="flex gap-1 bg-secondary p-1 rounded-xl mb-6">
+                          {(["editorial", "production"] as TeamType[]).map((team) => (
+                            <motion.button
+                              key={team}
+                              type="button"
+                              onClick={() => setSelectedTeam(team)}
                               className={cn(
-                                "flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all duration-200 font-sans",
-                                watch("referral_source") === source
-                                  ? "border-accent bg-accent/5"
-                                  : "border-border hover:border-accent/40"
+                                "flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-colors duration-200",
+                                selectedTeam === team
+                                  ? "bg-background text-foreground shadow-sm"
+                                  : "text-muted-foreground hover:text-foreground"
                               )}
+                              style={{ fontFamily: "'Poppins', sans-serif" }}
+                              whileTap={{ scale: 0.97 }}
                             >
-                              <input type="radio" {...register("referral_source")} value={source} className="sr-only" />
-                              <div className={cn(
-                                "w-4 h-4 rounded-full border-2 mr-3 flex items-center justify-center transition-all",
-                                watch("referral_source") === source ? "border-accent bg-accent" : "border-muted-foreground"
-                              )}>
-                                {watch("referral_source") === source && <div className="w-1.5 h-1.5 rounded-full bg-accent-foreground" />}
-                              </div>
-                              <span className="text-sm font-medium">{source}</span>
-                            </label>
+                              {team === "editorial" ? "Editorial Board" : "Production Team"}
+                            </motion.button>
                           ))}
                         </div>
-                        {errors.referral_source && <p className="text-destructive text-sm mt-2 font-sans">{errors.referral_source.message}</p>}
-                      </div>
-                      <InputField label="Additional Message" error={errors.additional_message?.message} optional>
-                        <textarea {...register("additional_message")} className="form-input-pill min-h-[100px] resize-none" placeholder="Anything else you'd like us to know?" />
-                      </InputField>
-                    </div>
-                  </div>
-                )}
 
-                {/* Navigation */}
-                <div className="flex justify-between mt-10 pt-6 border-t border-border">
-                  <button
-                    type="button"
-                    onClick={prevStep}
-                    className={cn(
-                      "flex items-center gap-2 px-5 py-2.5 rounded-full font-sans font-medium text-sm transition-all active:scale-95",
-                      currentStep === 1 ? "opacity-0 pointer-events-none" : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                        <AnimatePresence mode="wait">
+                          <motion.div
+                            key={selectedTeam}
+                            className="grid gap-3"
+                            initial={{ opacity: 0, y: 8 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -8 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            {positions.map((position, idx) => (
+                              <motion.label
+                                key={position}
+                                className={cn(
+                                  "flex items-center p-4 rounded-xl border-2 cursor-pointer transition-colors duration-200",
+                                  watch("position") === position
+                                    ? "border-accent bg-accent/5"
+                                    : "border-border hover:border-accent/40 hover:bg-secondary/50"
+                                )}
+                                style={{ fontFamily: "'Poppins', sans-serif" }}
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: idx * 0.05 }}
+                                whileHover={{ scale: 1.01 }}
+                                whileTap={{ scale: 0.99 }}
+                              >
+                                <input type="radio" {...register("position")} value={position} className="sr-only" />
+                                <div className={cn(
+                                  "w-5 h-5 rounded-full border-2 mr-4 flex items-center justify-center transition-all",
+                                  watch("position") === position ? "border-accent bg-accent" : "border-muted-foreground"
+                                )}>
+                                  {watch("position") === position && <div className="w-2 h-2 rounded-full bg-accent-foreground" />}
+                                </div>
+                                <span className="font-medium text-sm" style={{ fontFamily: "'Poppins', sans-serif" }}>{position}</span>
+                              </motion.label>
+                            ))}
+                          </motion.div>
+                        </AnimatePresence>
+                        {errors.position && <p className="text-destructive text-sm mt-3" style={{ fontFamily: "'Poppins', sans-serif" }}>{errors.position.message}</p>}
+                      </motion.div>
                     )}
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                    Back
-                  </button>
 
-                  {currentStep < 4 ? (
-                    <button
+                    {/* Step 3 */}
+                    {currentStep === 3 && (
+                      <motion.div
+                        key="step3"
+                        custom={direction}
+                        variants={stepVariants}
+                        initial="enter"
+                        animate="center"
+                        exit="exit"
+                      >
+                        <h3 className="font-bold text-xl md:text-2xl mb-1 text-foreground" style={{ fontFamily: "'Poppins', sans-serif" }}>Experience & Portfolio</h3>
+                        <p className="text-muted-foreground text-sm mb-8" style={{ fontFamily: "'Poppins', sans-serif" }}>Share your background and work</p>
+                        <div className="space-y-5">
+                          <InputField label="Relevant Experience" error={errors.relevant_experience?.message}>
+                            <textarea {...register("relevant_experience")} className="form-input-pill min-h-[160px] resize-none" placeholder="Describe your experience in journalism, writing, photography, video production, or any related field..." />
+                          </InputField>
+                          <InputField label="Portfolio Google Drive Link" error={errors.portfolio_link?.message} optional>
+                            <input {...register("portfolio_link")} type="url" className="form-input-pill" placeholder="https://drive.google.com/..." />
+                          </InputField>
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {/* Step 4 */}
+                    {currentStep === 4 && (
+                      <motion.div
+                        key="step4"
+                        custom={direction}
+                        variants={stepVariants}
+                        initial="enter"
+                        animate="center"
+                        exit="exit"
+                      >
+                        <h3 className="font-bold text-xl md:text-2xl mb-1 text-foreground" style={{ fontFamily: "'Poppins', sans-serif" }}>Final Details</h3>
+                        <p className="text-muted-foreground text-sm mb-8" style={{ fontFamily: "'Poppins', sans-serif" }}>Almost there!</p>
+                        <div className="space-y-5">
+                          <div>
+                            <label className="block text-sm font-medium mb-3 text-foreground" style={{ fontFamily: "'Poppins', sans-serif" }}>How did you hear about us? *</label>
+                            <div className="grid gap-3 sm:grid-cols-2">
+                              {referralSources.map((source, idx) => (
+                                <motion.label
+                                  key={source}
+                                  className={cn(
+                                    "flex items-center p-3 rounded-xl border-2 cursor-pointer transition-colors duration-200",
+                                    watch("referral_source") === source
+                                      ? "border-accent bg-accent/5"
+                                      : "border-border hover:border-accent/40"
+                                  )}
+                                  style={{ fontFamily: "'Poppins', sans-serif" }}
+                                  initial={{ opacity: 0, y: 8 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{ delay: idx * 0.05 }}
+                                  whileHover={{ scale: 1.01 }}
+                                  whileTap={{ scale: 0.99 }}
+                                >
+                                  <input type="radio" {...register("referral_source")} value={source} className="sr-only" />
+                                  <div className={cn(
+                                    "w-4 h-4 rounded-full border-2 mr-3 flex items-center justify-center transition-all",
+                                    watch("referral_source") === source ? "border-accent bg-accent" : "border-muted-foreground"
+                                  )}>
+                                    {watch("referral_source") === source && <div className="w-1.5 h-1.5 rounded-full bg-accent-foreground" />}
+                                  </div>
+                                  <span className="text-sm font-medium" style={{ fontFamily: "'Poppins', sans-serif" }}>{source}</span>
+                                </motion.label>
+                              ))}
+                            </div>
+                            {errors.referral_source && <p className="text-destructive text-sm mt-2" style={{ fontFamily: "'Poppins', sans-serif" }}>{errors.referral_source.message}</p>}
+                          </div>
+                          <InputField label="Additional Message" error={errors.additional_message?.message} optional>
+                            <textarea {...register("additional_message")} className="form-input-pill min-h-[100px] resize-none" placeholder="Anything else you'd like us to know?" />
+                          </InputField>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  {/* Navigation */}
+                  <div className="flex justify-between mt-10 pt-6 border-t border-border">
+                    <motion.button
                       type="button"
-                      onClick={nextStep}
-                      className="flex items-center gap-2 bg-foreground text-background font-sans font-semibold text-sm px-6 py-2.5 rounded-full hover:opacity-90 transition-all active:scale-95"
+                      onClick={prevStep}
+                      className={cn(
+                        "flex items-center gap-2 px-5 py-2.5 rounded-full font-medium text-sm transition-colors",
+                        currentStep === 1 ? "opacity-0 pointer-events-none" : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                      )}
+                      style={{ fontFamily: "'Poppins', sans-serif" }}
+                      whileHover={{ x: -2 }}
+                      whileTap={{ scale: 0.96 }}
                     >
-                      Continue
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
-                  ) : (
-                    <button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="flex items-center gap-2 bg-accent text-accent-foreground font-sans font-semibold text-sm px-6 py-2.5 rounded-full hover:bg-accent/90 transition-all active:scale-95 disabled:opacity-50"
-                    >
-                      {isSubmitting ? "Submitting..." : "Submit Application"}
-                      <Send className="w-4 h-4" />
-                    </button>
-                  )}
+                      <ChevronLeft className="w-4 h-4" />
+                      Back
+                    </motion.button>
+
+                    {currentStep < 4 ? (
+                      <motion.button
+                        type="button"
+                        onClick={nextStep}
+                        className="flex items-center gap-2 bg-foreground text-background font-semibold text-sm px-6 py-2.5 rounded-full hover:opacity-90 transition-opacity"
+                        style={{ fontFamily: "'Poppins', sans-serif" }}
+                        whileHover={{ scale: 1.03, x: 2 }}
+                        whileTap={{ scale: 0.97 }}
+                      >
+                        Continue
+                        <ChevronRight className="w-4 h-4" />
+                      </motion.button>
+                    ) : (
+                      <motion.button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="flex items-center gap-2 bg-accent text-accent-foreground font-semibold text-sm px-6 py-2.5 rounded-full hover:bg-accent/90 transition-colors disabled:opacity-50"
+                        style={{ fontFamily: "'Poppins', sans-serif" }}
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.97 }}
+                      >
+                        {isSubmitting ? "Submitting..." : "Submit Application"}
+                        <Send className="w-4 h-4" />
+                      </motion.button>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </form>
-          )}
+              </form>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Footer */}
-        <footer className="bg-background border-t border-border mt-auto">
+        <footer className="bg-background border-t border-border mt-auto" style={{ fontFamily: "'Poppins', sans-serif" }}>
           <div className="max-w-6xl mx-auto px-4 py-8">
             <div className="flex items-center gap-6">
-              <span className="text-sm font-sans font-medium text-foreground">Follow Us</span>
+              <span className="text-sm font-medium text-foreground" style={{ fontFamily: "'Poppins', sans-serif" }}>Follow Us</span>
               <div className="flex items-center gap-4">
                 <a href="#" className="text-muted-foreground hover:text-foreground transition-all hover:scale-110 active:scale-95" aria-label="Facebook">
                   <Facebook className="w-5 h-5" />
@@ -416,31 +549,42 @@ export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModal
           <div className="max-w-6xl mx-auto px-4"><div className="h-px bg-border" /></div>
           <div className="max-w-6xl mx-auto px-4 py-6">
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-              <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-                <div className="flex items-center gap-2">
-                  <img src={logo} alt="Ang Silakbo Logo" className="w-6 h-6 object-contain" />
-                  <span className="font-sans font-bold text-sm text-foreground">ANG SILAKBO</span>
-                </div>
+              <div className="flex items-center gap-2">
+                <img src={logo} alt="Ang Silakbo Logo" className="w-6 h-6 object-contain" />
+                <span className="font-bold text-sm text-foreground" style={{ fontFamily: "'Poppins', sans-serif" }}>ANG SILAKBO</span>
               </div>
-              <p className="text-xs font-sans text-muted-foreground">
+              <p className="text-xs text-muted-foreground" style={{ fontFamily: "'Poppins', sans-serif" }}>
                 © {new Date().getFullYear()} Ang Silakbo Publication
               </p>
             </div>
           </div>
         </footer>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
 function InputField({ label, error, optional, children }: { label: string; error?: string; optional?: boolean; children: React.ReactNode }) {
   return (
-    <div>
-      <label className="block text-sm font-sans font-medium mb-2 text-foreground">
+    <motion.div
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.25 }}
+    >
+      <label className="block text-sm font-medium mb-2 text-foreground" style={{ fontFamily: "'Poppins', sans-serif" }}>
         {label} {optional ? <span className="text-muted-foreground font-normal">(Optional)</span> : "*"}
       </label>
       {children}
-      {error && <p className="text-destructive text-sm mt-1 font-sans">{error}</p>}
-    </div>
+      {error && (
+        <motion.p
+          className="text-destructive text-sm mt-1"
+          style={{ fontFamily: "'Poppins', sans-serif" }}
+          initial={{ opacity: 0, y: -4 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          {error}
+        </motion.p>
+      )}
+    </motion.div>
   );
 }
