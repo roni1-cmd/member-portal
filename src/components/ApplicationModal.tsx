@@ -191,6 +191,17 @@ export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModal
         transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
         style={{ fontFamily: "'Poppins', sans-serif" }}
       >
+      {/* Progress Bar */}
+      <div className="absolute top-0 left-0 right-0 h-1 bg-border overflow-hidden z-10">
+        <motion.div
+          className="h-full bg-accent origin-left"
+          initial={false}
+          animate={{ scaleX: isSubmitted ? 1 : currentStep / 4 }}
+          transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+          style={{ transformOrigin: "left" }}
+        />
+      </div>
+
       {/* Top Bar */}
       <motion.div
         className="flex items-center justify-between px-6 py-4 border-b border-border"
