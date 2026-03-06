@@ -487,7 +487,53 @@ export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModal
                         exit="exit"
                       >
                         <h3 className="font-bold text-xl md:text-2xl mb-1 text-foreground" style={{ fontFamily: "'Poppins', sans-serif" }}>Final Details</h3>
-                        <p className="text-muted-foreground text-sm mb-8" style={{ fontFamily: "'Poppins', sans-serif" }}>Almost there!</p>
+                        <p className="text-muted-foreground text-sm mb-6" style={{ fontFamily: "'Poppins', sans-serif" }}>Almost there!</p>
+
+                        {/* Confirmation Summary */}
+                        <motion.div
+                          className="rounded-2xl border border-accent/30 bg-accent/5 p-4 mb-7 flex items-center gap-4"
+                          initial={{ opacity: 0, y: 8 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.35, ease: "easeOut" }}
+                        >
+                          <div className="w-9 h-9 rounded-full bg-accent/15 flex items-center justify-center shrink-0">
+                            <Check className="w-4 h-4 text-accent" />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-xs text-muted-foreground mb-0.5" style={{ fontFamily: "'Poppins', sans-serif" }}>Applying as</p>
+                            <AnimatePresence mode="wait">
+                              <motion.p
+                                key={watch("full_name") + watch("position")}
+                                className="font-semibold text-sm text-foreground truncate"
+                                style={{ fontFamily: "'Poppins', sans-serif" }}
+                                initial={{ opacity: 0, y: 4 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -4 }}
+                                transition={{ duration: 0.2 }}
+                              >
+                                {watch("full_name") || "—"}
+                              </motion.p>
+                            </AnimatePresence>
+                            <AnimatePresence mode="wait">
+                              <motion.p
+                                key={watch("position")}
+                                className="text-xs text-accent font-medium mt-0.5"
+                                style={{ fontFamily: "'Poppins', sans-serif" }}
+                                initial={{ opacity: 0, y: 4 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -4 }}
+                                transition={{ duration: 0.2, delay: 0.05 }}
+                              >
+                                {watch("position") || "No position selected"}
+                              </motion.p>
+                            </AnimatePresence>
+                          </div>
+                          <div className="ml-auto shrink-0 text-right">
+                            <p className="text-xs text-muted-foreground" style={{ fontFamily: "'Poppins', sans-serif" }}>Team</p>
+                            <p className="text-xs font-medium text-foreground" style={{ fontFamily: "'Poppins', sans-serif" }}>{teamName}</p>
+                          </div>
+                        </motion.div>
+
                         <div className="space-y-5">
                           <div>
                             <label className="block text-sm font-medium mb-3 text-foreground" style={{ fontFamily: "'Poppins', sans-serif" }}>How did you hear about us? *</label>
