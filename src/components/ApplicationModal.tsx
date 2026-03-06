@@ -192,25 +192,7 @@ export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModal
         style={{ fontFamily: "'Poppins', sans-serif" }}
       >
       {/* Step Label + Progress Bar */}
-      <div className="absolute top-0 left-0 right-0 z-10">
-        {/* Step label */}
-        <div className="flex justify-end px-6 pt-1.5 pb-1">
-          <AnimatePresence mode="wait">
-            {!isSubmitted && (
-              <motion.span
-                key={currentStep}
-                className="text-[11px] font-medium text-muted-foreground tracking-wide"
-                style={{ fontFamily: "'Poppins', sans-serif" }}
-                initial={{ opacity: 0, y: -4 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 4 }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
-              >
-                Step {currentStep} of 4 — {stepLabels[currentStep - 1]}
-              </motion.span>
-            )}
-          </AnimatePresence>
-        </div>
+      <div className="shrink-0">
         {/* Bar */}
         <div className="h-[3px] bg-border overflow-hidden">
           <motion.div
@@ -225,7 +207,7 @@ export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModal
 
       {/* Top Bar */}
       <motion.div
-        className="flex items-center justify-between px-6 py-4 border-b border-border"
+        className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-border"
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.3, delay: 0.05 }}
@@ -236,14 +218,31 @@ export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModal
             ANG SILAKBO
           </span>
         </div>
-        <motion.button
-          onClick={handleClose}
-          className="p-2 rounded-full hover:bg-secondary transition-colors"
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-        >
-          <X className="w-5 h-5 text-muted-foreground" />
-        </motion.button>
+        <div className="flex items-center gap-4">
+          <AnimatePresence mode="wait">
+            {!isSubmitted && (
+              <motion.span
+                key={currentStep}
+                className="text-[11px] font-medium text-muted-foreground tracking-wide hidden sm:block"
+                style={{ fontFamily: "'Poppins', sans-serif" }}
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 4 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+              >
+                Step {currentStep} of 4 — {stepLabels[currentStep - 1]}
+              </motion.span>
+            )}
+          </AnimatePresence>
+          <motion.button
+            onClick={handleClose}
+            className="p-2 rounded-full hover:bg-secondary transition-colors"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+          >
+            <X className="w-5 h-5 text-muted-foreground" />
+          </motion.button>
+        </div>
       </motion.div>
 
       {/* Scrollable Content */}
