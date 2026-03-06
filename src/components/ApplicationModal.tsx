@@ -191,15 +191,36 @@ export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModal
         transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
         style={{ fontFamily: "'Poppins', sans-serif" }}
       >
-      {/* Progress Bar */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-border overflow-hidden z-10">
-        <motion.div
-          className="h-full bg-accent origin-left"
-          initial={false}
-          animate={{ scaleX: isSubmitted ? 1 : currentStep / 4 }}
-          transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
-          style={{ transformOrigin: "left" }}
-        />
+      {/* Step Label + Progress Bar */}
+      <div className="absolute top-0 left-0 right-0 z-10">
+        {/* Step label */}
+        <div className="flex justify-end px-6 pt-1.5 pb-1">
+          <AnimatePresence mode="wait">
+            {!isSubmitted && (
+              <motion.span
+                key={currentStep}
+                className="text-[11px] font-medium text-muted-foreground tracking-wide"
+                style={{ fontFamily: "'Poppins', sans-serif" }}
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 4 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+              >
+                Step {currentStep} of 4 — {stepLabels[currentStep - 1]}
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </div>
+        {/* Bar */}
+        <div className="h-[3px] bg-border overflow-hidden">
+          <motion.div
+            className="h-full bg-accent"
+            initial={false}
+            animate={{ scaleX: isSubmitted ? 1 : currentStep / 4 }}
+            transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+            style={{ transformOrigin: "left" }}
+          />
+        </div>
       </div>
 
       {/* Top Bar */}
