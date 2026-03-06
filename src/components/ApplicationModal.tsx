@@ -218,14 +218,31 @@ export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModal
             ANG SILAKBO
           </span>
         </div>
-        <motion.button
-          onClick={handleClose}
-          className="p-2 rounded-full hover:bg-secondary transition-colors"
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-        >
-          <X className="w-5 h-5 text-muted-foreground" />
-        </motion.button>
+        <div className="flex items-center gap-4">
+          <AnimatePresence mode="wait">
+            {!isSubmitted && (
+              <motion.span
+                key={currentStep}
+                className="text-[11px] font-medium text-muted-foreground tracking-wide hidden sm:block"
+                style={{ fontFamily: "'Poppins', sans-serif" }}
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 4 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+              >
+                Step {currentStep} of 4 — {stepLabels[currentStep - 1]}
+              </motion.span>
+            )}
+          </AnimatePresence>
+          <motion.button
+            onClick={handleClose}
+            className="p-2 rounded-full hover:bg-secondary transition-colors"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+          >
+            <X className="w-5 h-5 text-muted-foreground" />
+          </motion.button>
+        </div>
       </motion.div>
 
       {/* Scrollable Content */}
