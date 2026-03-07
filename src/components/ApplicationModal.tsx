@@ -255,7 +255,7 @@ export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModal
       </motion.div>
 
       {/* Scrollable Content */}
-      <div className="flex-1 min-h-0 overflow-y-auto">
+      <div className="flex-1 min-h-0 overflow-y-auto scrollbar-hide">
         <div className="max-w-2xl mx-auto px-4 py-12 md:py-16">
           {/* Header */}
           <motion.div
