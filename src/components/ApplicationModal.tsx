@@ -100,7 +100,16 @@ export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModal
     mode: "onChange",
   });
 
+  // Lock body scroll while modal is open
+  useState(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  });
+
   const handleClose = () => {
+    document.body.style.overflow = "";
     setCurrentStep(1);
     setIsSubmitted(false);
     reset();
