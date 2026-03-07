@@ -355,7 +355,7 @@ export default function Admin() {
             ) : (
               <motion.div key="main" className="flex-1 flex flex-col" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
                 {/* Header */}
-                <header className="border-b border-orange-200/60 sticky top-0 z-40" style={{ background: "#fdf6ee" }}>
+                <header className="sticky top-0 z-40 bg-background">
                   <div className="flex items-center justify-between py-3 px-4">
                     <div className="flex items-center gap-3 min-w-0">
                       <SidebarTrigger className="p-2 hover:bg-orange-100/60 rounded-lg shrink-0">
