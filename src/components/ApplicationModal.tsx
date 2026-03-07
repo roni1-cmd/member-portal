@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -100,7 +100,16 @@ export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModal
     mode: "onChange",
   });
 
+  // Lock body scroll while modal is open
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
+
   const handleClose = () => {
+    document.body.style.overflow = "";
     setCurrentStep(1);
     setIsSubmitted(false);
     reset();
@@ -167,7 +176,7 @@ export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModal
 
   return (
     <motion.div
-      className="fixed inset-0 z-50 overflow-hidden"
+      className="fixed inset-0 z-50 flex flex-col overflow-hidden"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -184,7 +193,7 @@ export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModal
       />
       {/* Scaled content panel */}
       <motion.div
-        className="relative flex flex-col h-full bg-background"
+        className="relative flex flex-col min-h-0 flex-1 bg-background"
         initial={{ opacity: 0, scale: 0.97, y: 16 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.97, y: 16 }}
@@ -246,7 +255,7 @@ export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModal
       </motion.div>
 
       {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 min-h-0 overflow-y-auto">
         <div className="max-w-2xl mx-auto px-4 py-12 md:py-16">
           {/* Header */}
           <motion.div
