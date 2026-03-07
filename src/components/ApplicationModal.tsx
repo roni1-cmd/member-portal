@@ -101,12 +101,12 @@ export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModal
   });
 
   // Lock body scroll while modal is open
-  useState(() => {
+  useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = "";
     };
-  });
+  }, []);
 
   const handleClose = () => {
     document.body.style.overflow = "";
