@@ -167,7 +167,7 @@ export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModal
 
   return (
     <motion.div
-      className="fixed inset-0 z-50 flex flex-col"
+      className="fixed inset-0 z-50 overflow-hidden"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -184,7 +184,7 @@ export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModal
       />
       {/* Scaled content panel */}
       <motion.div
-        className="relative flex flex-col flex-1 bg-background"
+        className="relative flex flex-col h-full bg-background"
         initial={{ opacity: 0, scale: 0.97, y: 16 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.97, y: 16 }}
