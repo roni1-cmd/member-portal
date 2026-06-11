@@ -222,7 +222,7 @@ export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModal
         transition={{ duration: 0.3, delay: 0.05 }}
       >
         <div className="flex items-center gap-3">
-          <img src={logo} alt="Ang Silakbo Logo" className="w-7 h-7 object-contain" />
+          <img src={logo} alt="Ang Silakbo Logo" className="w-7 h-7 object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
           <span className="font-bold text-lg text-foreground tracking-tight" style={{ fontFamily: "'Poppins', sans-serif" }}>
             ANG SILAKBO
           </span>
@@ -651,7 +651,7 @@ export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModal
           <div className="max-w-6xl mx-auto px-4 py-6">
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
               <div className="flex items-center gap-2">
-                <img src={logo} alt="Ang Silakbo Logo" className="w-6 h-6 object-contain" />
+                <img src={logo} alt="Ang Silakbo Logo" className="w-6 h-6 object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                 <span className="font-bold text-sm text-foreground" style={{ fontFamily: "'Poppins', sans-serif" }}>ANG SILAKBO</span>
               </div>
               <p className="text-xs text-muted-foreground" style={{ fontFamily: "'Poppins', sans-serif" }}>

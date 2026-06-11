@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Mail, Phone, MapPin, ExternalLink, ArrowLeft, Grid3X3, List, Briefcase, MoreVertical, Home, Users, Settings, Menu, Archive, CalendarDays, LayoutGrid, ChevronRight } from "lucide-react";
+import { Mail, Phone, MapPin, ExternalLink, ArrowLeft, Grid3x3 as Grid3X3, List, Briefcase, MoveVertical as MoreVertical, Chrome as Home, Users, Settings, Menu, Archive, CalendarDays, LayoutGrid, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import logo from "@/assets/logo.png";
 import { motion, AnimatePresence } from "framer-motion";
@@ -363,7 +363,7 @@ export default function Admin() {
                       </SidebarTrigger>
                       {!selectedPosition ? (
                         <motion.div className="flex items-center gap-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                          <img src={logo} alt="Ang Silakbo Logo" className="w-8 h-8 object-contain" />
+                          <img src={logo} alt="Ang Silakbo Logo" className="w-8 h-8 object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                           <span className="font-sans font-bold text-xl text-foreground tracking-tight">ANG SILAKBO</span>
                         </motion.div>
                       ) : (

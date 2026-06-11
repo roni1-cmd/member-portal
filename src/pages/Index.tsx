@@ -91,7 +91,7 @@ const Index = () => {
       </nav>
 
       {/* Hero - Full viewport with slideshow */}
-      <section className="relative flex-1 min-h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative flex-1 min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f3460]">
         {/* Background slideshow */}
         {slides.map((slide, i) => (
           <div
@@ -103,6 +103,9 @@ const Index = () => {
               src={slide}
               alt=""
               className="w-full h-full object-cover"
+              onError={(e) => {
+                (e.target as HTMLImageElement).style.display = 'none';
+              }}
             />
           </div>
         ))}
@@ -113,7 +116,8 @@ const Index = () => {
         {/* Content */}
         <div className="relative z-10 max-w-7xl px-4 sm:px-6 lg:px-8 text-left flex flex-col items-start">
           <div className="flex items-center justify-start gap-3 mb-8">
-            <img src={logo} alt="Ang Silakbo Logo" className="w-12 h-12 object-contain" />
+            <img src={logo} alt="Ang Silakbo Logo" className="w-12 h-12 object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+            <span className="text-white text-2xl font-bold" style={{ fontFamily: 'Poppins, sans-serif' }}>ANG SILAKBO</span>
           </div>
 
           <h1
@@ -177,7 +181,7 @@ const Index = () => {
         <div className="max-w-6xl mx-auto px-4 py-6">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div className="flex items-center gap-2">
-              <img src={logo} alt="Ang Silakbo Logo" className="w-6 h-6 object-contain" />
+              <img src={logo} alt="Ang Silakbo Logo" className="w-6 h-6 object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
               <span className="font-bold text-sm text-foreground" style={{ fontFamily: 'Poppins, sans-serif' }}>ANG SILAKBO</span>
             </div>
             <p className="text-xs text-muted-foreground">
