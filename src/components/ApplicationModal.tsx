@@ -377,7 +377,7 @@ export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModal
                             <input {...register("full_name")} className="form-input-pill" placeholder="Juan Dela Cruz" />
                           </InputField>
                           <InputField label="Section" error={errors.section?.message}>
-                            <input {...register("section")} className="form-input-pill" placeholder="e.g., 12-STEM A" />
+                            <input {...register("section")} className="form-input-pill" placeholder="ST11A1" />
                           </InputField>
                           <InputField label="Email Address" error={errors.email?.message}>
                             <input {...register("email")} type="email" className="form-input-pill" placeholder="your.email@example.com" />
