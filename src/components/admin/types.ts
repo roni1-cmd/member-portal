@@ -10,6 +10,7 @@ export interface Application {
   portfolio_link: string | null;
   referral_source: string;
   additional_message: string | null;
+  profile_photo: string | null;
   created_at: string;
 }
 

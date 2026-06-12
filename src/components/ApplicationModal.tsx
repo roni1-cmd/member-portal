@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Check, ChevronRight, ChevronLeft, Send, X, Facebook, Mail } from "lucide-react";
+import { Check, ChevronRight, ChevronLeft, Send, X, Facebook, Mail, Camera, Upload } from "lucide-react";
 import { cn } from "@/lib/utils";
 import logo from "@/assets/logo.png";
 import { motion, AnimatePresence } from "framer-motion";
@@ -90,6 +90,9 @@ export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModal
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState<TeamType>(teamType);
   const [direction, setDirection] = useState(1);
+  const [selectedPhoto, setSelectedPhoto] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const positions = selectedTeam === "editorial" ? editorialPositions : selectedTeam === "production" ? productionPositions : financePositions;
   const teamName = selectedTeam === "editorial" ? "Editorial Board" : selectedTeam === "production" ? "Production Team" : "Finance Team";
@@ -118,6 +121,8 @@ export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModal
     document.body.style.overflow = "";
     setCurrentStep(1);
     setIsSubmitted(false);
+    setSelectedPhoto(null);
+    setPhotoPreview(null);
     reset();
     onClose();
   };
@@ -152,9 +157,70 @@ export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModal
     }
   };
 
+  const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file size (2MB max)
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error("Photo must be less than 2MB");
+      return;
+    }
+
+    // Validate file type
+    if (!['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(file.type)) {
+      toast.error("Please select a valid image file (JPEG, PNG, WebP, or GIF)");
+      return;
+    }
+
+    setSelectedPhoto(file);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setPhotoPreview(e.target?.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const removePhoto = () => {
+    setSelectedPhoto(null);
+    setPhotoPreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
     try {
+      let profilePhotoUrl: string | null = null;
+
+      // Upload photo if selected
+      if (selectedPhoto) {
+        const fileExt = selectedPhoto.name.split('.').pop();
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+        const filePath = `public/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('profile-photos')
+          .upload(filePath, selectedPhoto, {
+            cacheControl: '3600',
+            upsert: false,
+          });
+
+        if (uploadError) {
+          console.error("Error uploading photo:", uploadError);
+          toast.error("Failed to upload photo. Please try again.");
+          setIsSubmitting(false);
+          return;
+        }
+
+        const { data: urlData } = supabase.storage
+          .from('profile-photos')
+          .getPublicUrl(filePath);
+
+        profilePhotoUrl = urlData.publicUrl;
+      }
+
       const { error } = await supabase.from("membership_applications").insert({
         full_name: data.full_name,
         section: data.section,
@@ -166,6 +232,7 @@ export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModal
         portfolio_link: data.portfolio_link || null,
         referral_source: data.referral_source,
         additional_message: data.additional_message || null,
+        profile_photo: profilePhotoUrl,
       });
 
       if (error) throw error;
@@ -373,6 +440,41 @@ export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModal
                         <h3 className="font-bold text-xl md:text-2xl mb-1 text-foreground" style={{ fontFamily: "'Poppins', sans-serif" }}>Personal Information</h3>
                         <p className="text-muted-foreground text-sm mb-8" style={{ fontFamily: "'Poppins', sans-serif" }}>Tell us about yourself</p>
                         <div className="space-y-5">
+                          {/* Profile Photo Upload */}
+                          <div className="flex flex-col items-center mb-6">
+                            <div className="relative">
+                              <div
+                                className="w-24 h-24 rounded-full bg-secondary border-2 border-dashed border-border flex items-center justify-center overflow-hidden cursor-pointer hover:border-accent transition-colors"
+                                onClick={() => fileInputRef.current?.click()}
+                              >
+                                {photoPreview ? (
+                                  <img src={photoPreview} alt="Profile preview" className="w-full h-full object-cover" />
+                                ) : (
+                                  <div className="flex flex-col items-center text-muted-foreground">
+                                    <Camera className="w-8 h-8 mb-1" />
+                                    <span className="text-xs">Add Photo</span>
+                                  </div>
+                                )}
+                              </div>
+                              {photoPreview && (
+                                <button
+                                  type="button"
+                                  onClick={removePhoto}
+                                  className="absolute -top-1 -right-1 w-6 h-6 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center hover:bg-destructive/90 transition-colors"
+                                >
+                                  <X className="w-3 h-3" />
+                                </button>
+                              )}
+                            </div>
+                            <input
+                              ref={fileInputRef}
+                              type="file"
+                              accept="image/jpeg,image/png,image/webp,image/gif"
+                              onChange={handlePhotoSelect}
+                              className="hidden"
+                            />
+                            <p className="text-xs text-muted-foreground mt-2">Max 2MB (optional)</p>
+                          </div>
                           <InputField label="Full Name" error={errors.full_name?.message}>
                             <input {...register("full_name")} className="form-input-pill" placeholder="Juan Dela Cruz" />
                           </InputField>

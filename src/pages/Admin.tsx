@@ -36,6 +36,10 @@ import {
   formatShortDate,
 } from "@/components/admin/types";
 
+const getProfilePhoto = (app: Application) => {
+  return app.profile_photo || getAvatarUrl(app.full_name, 'notionists');
+};
+
 const fadeUp = {
   initial: { opacity: 0, y: 16 },
   animate: { opacity: 1, y: 0 },
@@ -318,7 +322,7 @@ export default function Admin() {
                         </span>
                       </div>
                       <div className="flex items-center gap-3 mb-4">
-                        <img src={getAvatarUrl(selectedApplication.full_name, 'notionists')} alt={selectedApplication.full_name} className="w-10 h-10 rounded-full bg-secondary" />
+                        <img src={getProfilePhoto(selectedApplication)} alt={selectedApplication.full_name} className="w-10 h-10 rounded-full bg-secondary object-cover" />
                         <div className="min-w-0">
                           <p className="text-sm font-medium text-foreground truncate">{selectedApplication.full_name}</p>
                           <p className="text-xs text-muted-foreground truncate">{selectedApplication.email}</p>
@@ -482,7 +486,7 @@ export default function Admin() {
                                     <p className="text-white/90 text-sm mt-1">{app.section}</p>
                                     <p className="text-white/80 text-sm">{app.full_name}</p>
                                     <div className="absolute bottom-4 right-4">
-                                      <img src={getAvatarUrl(app.full_name, 'notionists')} alt={app.full_name} className="w-16 h-16 rounded-full border-4 border-white/30 bg-white shadow-lg" />
+                                      <img src={getProfilePhoto(app)} alt={app.full_name} className="w-16 h-16 rounded-full border-4 border-white/30 bg-white shadow-lg object-cover" />
                                     </div>
                                   </div>
                                   <div className="p-4 flex items-center justify-between">
@@ -520,7 +524,7 @@ export default function Admin() {
                                   className="grid grid-cols-[auto_1fr_1fr_1fr_auto] gap-4 p-4 border-b border-border last:border-0 hover:bg-secondary/30 cursor-pointer transition-colors items-center"
                                   onClick={() => setSelectedApplication(app)}
                                 >
-                                  <img src={getAvatarUrl(app.full_name, 'notionists')} alt={app.full_name} className="w-10 h-10 rounded-full bg-secondary" />
+                                  <img src={getProfilePhoto(app)} alt={app.full_name} className="w-10 h-10 rounded-full bg-secondary object-cover" />
                                   <div>
                                     <p className="font-medium text-foreground">{app.full_name}</p>
                                     <p className="text-sm text-muted-foreground">{app.email}</p>

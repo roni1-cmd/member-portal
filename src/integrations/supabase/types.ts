@@ -25,6 +25,7 @@ export type Database = {
           phone_number: string
           portfolio_link: string | null
           position: Database["public"]["Enums"]["application_position"]
+          profile_photo: string | null
           referral_source: Database["public"]["Enums"]["referral_source"]
           relevant_experience: string
           section: string
@@ -40,6 +41,7 @@ export type Database = {
           phone_number: string
           portfolio_link?: string | null
           position: Database["public"]["Enums"]["application_position"]
+          profile_photo?: string | null
           referral_source: Database["public"]["Enums"]["referral_source"]
           relevant_experience: string
           section: string
@@ -55,6 +57,7 @@ export type Database = {
           phone_number?: string
           portfolio_link?: string | null
           position?: Database["public"]["Enums"]["application_position"]
+          profile_photo?: string | null
           referral_source?: Database["public"]["Enums"]["referral_source"]
           relevant_experience?: string
           section?: string
