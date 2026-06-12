@@ -255,8 +255,8 @@ export default function Admin() {
                   {/* Left */}
                   <motion.div className="flex-1 min-w-0" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3, delay: 0.1 }}>
                     <div className="flex items-start gap-4 mb-6">
-                      <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${getGradient(selectedApplication.position)} flex items-center justify-center shrink-0 overflow-hidden`}>
-                        <img src={getAvatarUrl(selectedApplication.position, 'thumbs')} alt={selectedApplication.position} className="w-full h-full object-cover" />
+                      <div className="w-12 h-12 rounded-full shrink-0 overflow-hidden bg-secondary">
+                        <img src={getProfilePhoto(selectedApplication)} alt={selectedApplication.full_name} className="w-full h-full object-cover" />
                       </div>
                       <div>
                         <h1 className="font-sans font-bold text-2xl text-foreground">{selectedApplication.full_name}</h1>
