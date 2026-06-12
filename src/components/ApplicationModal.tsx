@@ -9,15 +9,16 @@ import { cn } from "@/lib/utils";
 import logo from "@/assets/logo.png";
 import { motion, AnimatePresence } from "framer-motion";
 
-type TeamType = "editorial" | "production";
+type TeamType = "editorial" | "production" | "finance";
 
 const editorialPositions = [
   "Feature News Writer",
   "Editorial Writer",
   "Local News Writer",
   "Sports News Writer",
-  "Entertainment News Editor",
-  "Entertainment News Writer",
+  "Associate Editor",
+  "Editor",
+  "Editorial Cartoonist",
   "Layout Artist",
 ] as const;
 
@@ -26,9 +27,14 @@ const productionPositions = [
   "Video Journalist",
   "Video Editor",
   "Broadcaster",
+  "Assistant Production Head",
 ] as const;
 
-const allPositions = [...editorialPositions, ...productionPositions] as const;
+const financePositions = [
+  "Auditor",
+] as const;
+
+const allPositions = [...editorialPositions, ...productionPositions, ...financePositions] as const;
 
 const referralSources = [
   "Social Media",
@@ -85,8 +91,8 @@ export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModal
   const [selectedTeam, setSelectedTeam] = useState<TeamType>(teamType);
   const [direction, setDirection] = useState(1);
 
-  const positions = selectedTeam === "editorial" ? editorialPositions : productionPositions;
-  const teamName = selectedTeam === "editorial" ? "Editorial Board" : "Production Team";
+  const positions = selectedTeam === "editorial" ? editorialPositions : selectedTeam === "production" ? productionPositions : financePositions;
+  const teamName = selectedTeam === "editorial" ? "Editorial Board" : selectedTeam === "production" ? "Production Team" : "Finance Team";
 
   const {
     register,
@@ -401,7 +407,7 @@ export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModal
 
                         {/* Team Tabs */}
                         <div className="flex gap-1 bg-secondary p-1 rounded-xl mb-6">
-                          {(["editorial", "production"] as TeamType[]).map((team) => (
+                          {(["editorial", "production", "finance"] as TeamType[]).map((team) => (
                             <motion.button
                               key={team}
                               type="button"
@@ -415,7 +421,7 @@ export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModal
                               style={{ fontFamily: "'Poppins', sans-serif" }}
                               whileTap={{ scale: 0.97 }}
                             >
-                              {team === "editorial" ? "Editorial Board" : "Production Team"}
+                              {team === "editorial" ? "Editorial Board" : team === "production" ? "Production Team" : "Finance Team"}
                             </motion.button>
                           ))}
                         </div>

@@ -21,13 +21,16 @@ export const positionGradients: Record<string, string> = {
   "Editorial Writer": "from-teal-400 to-teal-600",
   "Local News Writer": "from-emerald-400 to-emerald-600",
   "Sports News Writer": "from-orange-400 to-orange-600",
-  "Entertainment News Editor": "from-violet-400 to-violet-600",
-  "Entertainment News Writer": "from-fuchsia-400 to-fuchsia-600",
+  "Associate Editor": "from-violet-400 to-violet-600",
+  "Editor": "from-fuchsia-400 to-fuchsia-600",
+  "Editorial Cartoonist": "from-cyan-400 to-cyan-600",
   "Layout Artist": "from-purple-400 to-purple-600",
   "Photojournalist": "from-pink-400 to-pink-600",
   "Video Journalist": "from-rose-400 to-rose-600",
   "Video Editor": "from-indigo-400 to-indigo-600",
   "Broadcaster": "from-amber-400 to-amber-600",
+  "Assistant Production Head": "from-red-400 to-red-600",
+  "Auditor": "from-green-400 to-green-600",
 };
 
 export const getGradient = (position: string) => {

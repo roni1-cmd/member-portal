@@ -75,13 +75,16 @@ export type Database = {
         | "Editorial Writer"
         | "Local News Writer"
         | "Sports News Writer"
-        | "Entertainment News Editor"
-        | "Entertainment News Writer"
+        | "Associate Editor"
+        | "Editor"
+        | "Editorial Cartoonist"
         | "Layout Artist"
         | "Photojournalist"
         | "Video Journalist"
         | "Video Editor"
         | "Broadcaster"
+        | "Assistant Production Head"
+        | "Auditor"
       referral_source:
         | "Social Media"
         | "Friend or Colleague"
@@ -220,13 +223,16 @@ export const Constants = {
         "Editorial Writer",
         "Local News Writer",
         "Sports News Writer",
-        "Entertainment News Editor",
-        "Entertainment News Writer",
+        "Associate Editor",
+        "Editor",
+        "Editorial Cartoonist",
         "Layout Artist",
         "Photojournalist",
         "Video Journalist",
         "Video Editor",
         "Broadcaster",
+        "Assistant Production Head",
+        "Auditor",
       ],
       referral_source: [
         "Social Media",

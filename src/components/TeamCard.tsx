@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Pen, Video, ArrowRight } from "lucide-react";
+import { Pen, Video, DollarSign, ArrowRight } from "lucide-react";
 
 interface TeamCardProps {
-  onApply: (team: "editorial" | "production") => void;
+  onApply: (team: "editorial" | "production" | "finance") => void;
 }
 
 const tabs = [
@@ -12,14 +12,15 @@ const tabs = [
     icon: Pen,
     title: "Craft compelling stories that inform and inspire",
     description:
-      "Join our editorial powerhouse and shape the narrative of student journalism. Write feature stories, editorials, local news, sports coverage, and entertainment pieces that resonate with our community.",
+      "Join our editorial powerhouse and shape the narrative of student journalism. Write feature stories, editorials, local news, sports coverage, and more that resonate with our community.",
     positions: [
       "Feature News Writer",
       "Editorial Writer",
       "Local News Writer",
       "Sports News Writer",
-      "Entertainment News Editor",
-      "Entertainment News Writer",
+      "Associate Editor",
+      "Editor",
+      "Editorial Cartoonist",
       "Layout Artist",
     ],
   },
@@ -35,12 +36,24 @@ const tabs = [
       "Video Journalist",
       "Video Editor",
       "Broadcaster",
+      "Assistant Production Head",
+    ],
+  },
+  {
+    id: "finance" as const,
+    label: "Finance Team",
+    icon: DollarSign,
+    title: "Keep the organization financially sound",
+    description:
+      "Ensure transparency and accountability in all financial matters. Help manage resources and maintain the financial health of the organization.",
+    positions: [
+      "Auditor",
     ],
   },
 ];
 
 export function TeamTabs({ onApply }: TeamCardProps) {
-  const [activeTab, setActiveTab] = useState<"editorial" | "production">("editorial");
+  const [activeTab, setActiveTab] = useState<"editorial" | "production" | "finance">("editorial");
   const activeData = tabs.find((t) => t.id === activeTab)!;
   const Icon = activeData.icon;
 
