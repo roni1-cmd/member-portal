@@ -254,11 +254,11 @@ export default function Admin() {
                 <div className="max-w-5xl mx-auto px-4 py-8 flex flex-col lg:flex-row gap-8 w-full">
                   {/* Left */}
                   <motion.div className="flex-1 min-w-0" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3, delay: 0.1 }}>
-                    <div className="flex items-start gap-4 mb-6">
-                      <div className="w-12 h-12 rounded-full shrink-0 overflow-hidden bg-secondary">
+                    <div className="flex items-start gap-5 mb-6">
+                      <div className="w-20 h-20 rounded-full shrink-0 overflow-hidden bg-secondary ring-2 ring-border">
                         <img src={getProfilePhoto(selectedApplication)} alt={selectedApplication.full_name} className="w-full h-full object-cover" />
                       </div>
-                      <div>
+                      <div className="pt-1">
                         <h1 className="font-sans font-bold text-2xl text-foreground">{selectedApplication.full_name}</h1>
                         <p className="text-sm text-muted-foreground mt-1">{selectedApplication.section} • {formatDate(selectedApplication.created_at)}</p>
                       </div>
@@ -321,12 +321,10 @@ export default function Admin() {
                           {selectedApplication.position}
                         </span>
                       </div>
-                      <div className="flex items-center gap-3 mb-4">
-                        <img src={getProfilePhoto(selectedApplication)} alt={selectedApplication.full_name} className="w-10 h-10 rounded-full bg-secondary object-cover" />
-                        <div className="min-w-0">
-                          <p className="text-sm font-medium text-foreground truncate">{selectedApplication.full_name}</p>
-                          <p className="text-xs text-muted-foreground truncate">{selectedApplication.email}</p>
-                        </div>
+                      <div className="flex flex-col items-center text-center mb-4">
+                        <img src={getProfilePhoto(selectedApplication)} alt={selectedApplication.full_name} className="w-20 h-20 rounded-full bg-secondary object-cover ring-2 ring-border mb-3" />
+                        <p className="text-sm font-semibold text-foreground">{selectedApplication.full_name}</p>
+                        <p className="text-xs text-muted-foreground">{selectedApplication.email}</p>
                       </div>
                       <div className="h-px bg-border mb-4" />
                       <div className="space-y-3 text-sm">
@@ -486,7 +484,7 @@ export default function Admin() {
                                     <p className="text-white/90 text-sm mt-1">{app.section}</p>
                                     <p className="text-white/80 text-sm">{app.full_name}</p>
                                     <div className="absolute bottom-4 right-4">
-                                      <img src={getProfilePhoto(app)} alt={app.full_name} className="w-16 h-16 rounded-full border-4 border-white/30 bg-white shadow-lg object-cover" />
+                                      <img src={getProfilePhoto(app)} alt={app.full_name} className="w-20 h-20 rounded-full border-4 border-white/30 bg-white shadow-lg object-cover" />
                                     </div>
                                   </div>
                                   <div className="p-4 flex items-center justify-between">
@@ -524,7 +522,7 @@ export default function Admin() {
                                   className="grid grid-cols-[auto_1fr_1fr_1fr_auto] gap-4 p-4 border-b border-border last:border-0 hover:bg-secondary/30 cursor-pointer transition-colors items-center"
                                   onClick={() => setSelectedApplication(app)}
                                 >
-                                  <img src={getProfilePhoto(app)} alt={app.full_name} className="w-10 h-10 rounded-full bg-secondary object-cover" />
+                                  <img src={getProfilePhoto(app)} alt={app.full_name} className="w-12 h-12 rounded-full bg-secondary object-cover ring-1 ring-border" />
                                   <div>
                                     <p className="font-medium text-foreground">{app.full_name}</p>
                                     <p className="text-sm text-muted-foreground">{app.email}</p>
