@@ -34,6 +34,8 @@ import {
   getInitialColor,
   formatDate,
   formatShortDate,
+  teamCategories,
+  getPositionCategory,
 } from "@/components/admin/types";
 
 const getProfilePhoto = (app: Application) => {
@@ -144,47 +146,53 @@ export default function Admin() {
 
             <div className="mx-4 my-2 h-px bg-orange-200/50" />
 
-            {/* Applications Group */}
-            <SidebarGroup>
-              <SidebarGroupLabel
-                className="px-6 text-xs font-medium text-muted-foreground uppercase tracking-wider flex items-center justify-between cursor-pointer hover:text-foreground group"
-                onClick={() => {
-                  setActiveView("applications");
-                  setSelectedPosition(null);
-                  setSelectedApplication(null);
-                }}
-              >
-                <span>Enrolled</span>
-                <span className="text-accent text-xs">{applications.length}</span>
-              </SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {Object.entries(applicationsByPosition).map(([position, apps]) => (
-                    <SidebarMenuItem key={position}>
-                      <SidebarMenuButton
-                        onClick={() => {
-                          setActiveView("applications");
-                          setSelectedPosition(position);
-                        }}
-                        className={`h-14 px-6 rounded-r-full rounded-l-none group-data-[collapsible=icon]:rounded-md text-foreground hover:bg-orange-100/60 group cursor-pointer ${
-                          selectedPosition === position ? "bg-accent/10 text-accent font-medium hover:bg-accent/15" : ""
-                        }`}
-                      >
-                        <img
-                          src={getAvatarUrl(position, 'thumbs')}
-                          alt={position}
-                          className="w-8 h-8 rounded-full shrink-0 object-cover"
-                        />
-                        <div className="ml-3 min-w-0 flex-1 group-data-[collapsible=icon]:hidden">
-                          <p className="text-sm font-medium truncate">{position}</p>
-                          <p className="text-xs text-muted-foreground">{apps.length} applicant{apps.length !== 1 ? "s" : ""}</p>
-                        </div>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ))}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
+            {/* Positions grouped by team */}
+            {Object.entries(teamCategories).map(([team, positions], teamIndex) => {
+              const teamApps = positions.filter(p => applicationsByPosition[p]);
+              if (teamApps.length === 0) return null;
+              const teamTotal = teamApps.reduce((sum, p) => sum + (applicationsByPosition[p]?.length || 0), 0);
+              return (
+                <SidebarGroup key={team}>
+                  <SidebarGroupLabel className="px-6 text-xs font-medium text-muted-foreground uppercase tracking-wider flex items-center justify-between group-data-[collapsible=icon]:hidden">
+                    <span>{team}</span>
+                    <span className="text-accent text-xs">{teamTotal}</span>
+                  </SidebarGroupLabel>
+                  <SidebarGroupContent>
+                    <SidebarMenu>
+                      {teamApps.map((position) => {
+                        const apps = applicationsByPosition[position] || [];
+                        return (
+                          <SidebarMenuItem key={position}>
+                            <SidebarMenuButton
+                              onClick={() => {
+                                setActiveView("applications");
+                                setSelectedPosition(position);
+                              }}
+                              className={`h-14 px-6 rounded-r-full rounded-l-none group-data-[collapsible=icon]:rounded-md text-foreground hover:bg-orange-100/60 group cursor-pointer ${
+                                selectedPosition === position ? "bg-accent/10 text-accent font-medium hover:bg-accent/15" : ""
+                              }`}
+                            >
+                              <img
+                                src={getAvatarUrl(position, 'thumbs')}
+                                alt={position}
+                                className="w-8 h-8 rounded-full shrink-0 object-cover"
+                              />
+                              <div className="ml-3 min-w-0 flex-1 group-data-[collapsible=icon]:hidden">
+                                <p className="text-sm font-medium truncate">{position}</p>
+                                <p className="text-xs text-muted-foreground">{apps.length} applicant{apps.length !== 1 ? "s" : ""}</p>
+                              </div>
+                            </SidebarMenuButton>
+                          </SidebarMenuItem>
+                        );
+                      })}
+                    </SidebarMenu>
+                  </SidebarGroupContent>
+                  {teamIndex < Object.keys(teamCategories).length - 1 && (
+                    <div className="mx-4 mt-2 h-px bg-orange-200/50" />
+                  )}
+                </SidebarGroup>
+              );
+            })}
 
             <div className="mx-4 my-2 h-px bg-orange-200/50" />
 
@@ -377,6 +385,8 @@ export default function Admin() {
                             ANG SILAKBO
                           </span>
                           <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
+                          <span className="font-sans font-medium text-lg text-muted-foreground shrink-0">{getPositionCategory(selectedPosition!)}</span>
+                          <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
                           <span className="font-sans font-bold text-lg text-foreground truncate">{selectedPosition}</span>
                         </motion.div>
                       )}
@@ -425,44 +435,60 @@ export default function Admin() {
                               <p className="text-muted-foreground">Applications will appear here once submitted.</p>
                             </motion.div>
                           ) : viewMode === "categories" ? (
-                            <motion.div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" variants={stagger} initial="initial" animate="animate">
-                              {Array.from(new Set([...Object.keys(positionGradients), ...Object.keys(applicationsByPosition)])).map((position) => {
-                                const apps = applicationsByPosition[position] || [];
+                            <motion.div className="space-y-10" {...fadeUp}>
+                              {Object.entries(teamCategories).map(([team, positions]) => {
+                                const teamTotal = positions.reduce((sum, p) => sum + (applicationsByPosition[p]?.length || 0), 0);
                                 return (
-                                  <motion.div
-                                    key={position}
-                                    variants={cardVariant}
-                                    className="bg-card rounded-xl overflow-hidden hover:shadow-lg transition-all cursor-pointer group border border-border flex flex-col h-full"
-                                    onClick={() => setSelectedPosition(position)}
-                                    whileHover={{ y: -3, transition: { duration: 0.15 } }}
-                                  >
-                                    <div className={`relative h-24 bg-gradient-to-br ${getGradient(position)} p-4 flex flex-col justify-between`}>
-                                      <div className="flex items-start justify-between">
-                                        <div className="min-w-0">
-                                          <h3 className="font-bold text-white text-lg leading-tight group-hover:underline truncate">{position}</h3>
-                                        </div>
-                                        <button className="p-1.5 hover:bg-white/10 rounded-full transition-colors shrink-0">
-                                          <MoreVertical className="w-4 h-4 text-white" />
-                                        </button>
-                                      </div>
-                                      <div className="absolute -bottom-6 right-4">
-                                        <img src={getAvatarUrl(position, 'thumbs')} alt={position} className="w-12 h-12 rounded-full border-4 border-card bg-secondary shadow-md object-cover" />
-                                      </div>
+                                  <div key={team}>
+                                    <div className="flex items-center gap-3 mb-4">
+                                      <h2 className="font-sans font-bold text-lg text-foreground">{team}</h2>
+                                      <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-accent/10 text-accent">
+                                        {teamTotal} applicant{teamTotal !== 1 ? "s" : ""}
+                                      </span>
+                                      <div className="flex-1 h-px bg-border" />
                                     </div>
-                                    <div className="p-4 pt-8 flex-1 flex flex-col">
-                                      <div className="flex-1">
-                                        <p className="text-sm text-muted-foreground">{apps.length} applicant{apps.length !== 1 ? "s" : ""}</p>
-                                      </div>
-                                      <div className="mt-4 pt-3 border-t border-border flex justify-end gap-1">
-                                        <button className="p-2 hover:bg-secondary rounded-md text-muted-foreground hover:text-foreground transition-colors">
-                                          <Users className="w-4 h-4" />
-                                        </button>
-                                        <button className="p-2 hover:bg-secondary rounded-md text-muted-foreground hover:text-foreground transition-colors">
-                                          <Archive className="w-4 h-4" />
-                                        </button>
-                                      </div>
-                                    </div>
-                                  </motion.div>
+                                    <motion.div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" variants={stagger} initial="initial" animate="animate">
+                                      {positions.map((position) => {
+                                        const apps = applicationsByPosition[position] || [];
+                                        return (
+                                          <motion.div
+                                            key={position}
+                                            variants={cardVariant}
+                                            className="bg-card rounded-xl overflow-hidden hover:shadow-lg transition-all cursor-pointer group border border-border flex flex-col h-full"
+                                            onClick={() => setSelectedPosition(position)}
+                                            whileHover={{ y: -3, transition: { duration: 0.15 } }}
+                                          >
+                                            <div className={`relative h-24 bg-gradient-to-br ${getGradient(position)} p-4 flex flex-col justify-between`}>
+                                              <div className="flex items-start justify-between">
+                                                <div className="min-w-0">
+                                                  <h3 className="font-bold text-white text-base leading-tight group-hover:underline">{position}</h3>
+                                                </div>
+                                                <button className="p-1.5 hover:bg-white/10 rounded-full transition-colors shrink-0">
+                                                  <MoreVertical className="w-4 h-4 text-white" />
+                                                </button>
+                                              </div>
+                                              <div className="absolute -bottom-6 right-4">
+                                                <img src={getAvatarUrl(position, 'thumbs')} alt={position} className="w-12 h-12 rounded-full border-4 border-card bg-secondary shadow-md object-cover" />
+                                              </div>
+                                            </div>
+                                            <div className="p-4 pt-8 flex-1 flex flex-col">
+                                              <div className="flex-1">
+                                                <p className="text-sm text-muted-foreground">{apps.length} applicant{apps.length !== 1 ? "s" : ""}</p>
+                                              </div>
+                                              <div className="mt-4 pt-3 border-t border-border flex justify-end gap-1">
+                                                <button className="p-2 hover:bg-secondary rounded-md text-muted-foreground hover:text-foreground transition-colors">
+                                                  <Users className="w-4 h-4" />
+                                                </button>
+                                                <button className="p-2 hover:bg-secondary rounded-md text-muted-foreground hover:text-foreground transition-colors">
+                                                  <Archive className="w-4 h-4" />
+                                                </button>
+                                              </div>
+                                            </div>
+                                          </motion.div>
+                                        );
+                                      })}
+                                    </motion.div>
+                                  </div>
                                 );
                               })}
                             </motion.div>

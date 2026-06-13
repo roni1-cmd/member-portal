@@ -16,6 +16,34 @@ export interface Application {
 
 export type AdminView = "applications" | "calendar" | "settings";
 
+export const teamCategories: Record<string, string[]> = {
+  "Editorial Board": [
+    "Feature News Writer",
+    "Editorial Writer",
+    "Local News Writer",
+    "Sports News Writer",
+    "Associate Editor",
+    "Editor",
+    "Editorial Cartoonist",
+    "Layout Artist",
+  ],
+  "Production Team": [
+    "Photojournalist",
+    "Video Journalist",
+    "Video Editor",
+    "Broadcaster",
+    "Assistant Production Head",
+  ],
+  "Finance Team": ["Auditor"],
+};
+
+export const getPositionCategory = (position: string): string => {
+  for (const [category, positions] of Object.entries(teamCategories)) {
+    if (positions.includes(position)) return category;
+  }
+  return "Other";
+};
+
 // Position-based gradient colors
 export const positionGradients: Record<string, string> = {
   "Feature News Writer": "from-sky-400 to-sky-600",
