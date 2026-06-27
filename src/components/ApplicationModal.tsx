@@ -190,6 +190,10 @@ export function ApplicationModal({ isOpen, onClose, teamType }: ApplicationModal
   };
 
   const onSubmit = async (data: FormData) => {
+    if (new Date() > new Date("2026-06-27T23:59:59+08:00")) {
+      toast.error("Applications are closed. The deadline was June 27, 2026.");
+      return;
+    }
     setIsSubmitting(true);
     try {
       let profilePhotoUrl: string | null = null;

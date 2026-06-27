@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
 import { ApplicationModal } from "@/components/ApplicationModal";
-import { Facebook, Mail, Send } from "lucide-react";
+import { Facebook, Mail, Send, Lock } from "lucide-react";
 import logo from "@/assets/logo.png";
 import slide1 from "@/assets/slide-1.png";
 import slide2 from "@/assets/slide-2.png";
 import slide3 from "@/assets/slide-3.png";
 
 type TeamType = "editorial" | "production";
+
+const APPLICATION_DEADLINE = new Date("2026-06-27T23:59:59+08:00");
+const isApplicationOpen = () => new Date() <= APPLICATION_DEADLINE;
 
 const slides = [slide1, slide2, slide3];
 
@@ -36,6 +39,7 @@ const Index = () => {
   }, []);
 
   const openModal = (team: TeamType) => {
+    if (!isApplicationOpen()) return;
     setSelectedTeam(team);
     setIsModalOpen(true);
   };
@@ -82,9 +86,14 @@ const Index = () => {
           <div className="flex items-center justify-end h-16">
             <button
               onClick={() => openModal("editorial")}
-              className="bg-accent text-accent-foreground font-semibold text-sm py-2 px-6 rounded-full hover:bg-accent/90 transition-all active:scale-95"
+              disabled={!isApplicationOpen()}
+              className={`font-semibold text-sm py-2 px-6 rounded-full transition-all active:scale-95 ${
+                isApplicationOpen()
+                  ? "bg-accent text-accent-foreground hover:bg-accent/90"
+                  : "bg-muted text-muted-foreground cursor-not-allowed"
+              }`}
             >
-              Apply Now
+              {isApplicationOpen() ? "Apply Now" : "Applications Closed"}
             </button>
           </div>
         </div>
@@ -132,19 +141,33 @@ const Index = () => {
           </p>
 
           {/* Search bar with typing animation */}
-          <div
-            className="w-full max-w-3xl bg-white/95 backdrop-blur-sm rounded-full flex items-center px-8 py-6 shadow-2xl cursor-pointer hover:shadow-3xl transition-shadow active:scale-[0.98]"
-            onClick={() => openModal("editorial")}
-          >
-            <span className="flex-1 text-left text-muted-foreground text-xl md:text-3xl font-normal" style={{ fontFamily: 'Poppins, sans-serif' }}>
-              {typedText}
-              <span className="inline-block w-0.5 h-8 bg-accent ml-0.5 animate-pulse align-middle" />
-            </span>
-            <Send className="w-8 h-8 text-accent ml-4 shrink-0" />
-          </div>
+          {isApplicationOpen() ? (
+            <div
+              className="w-full max-w-3xl bg-white/95 backdrop-blur-sm rounded-full flex items-center px-8 py-6 shadow-2xl cursor-pointer hover:shadow-3xl transition-shadow active:scale-[0.98]"
+              onClick={() => openModal("editorial")}
+            >
+              <span className="flex-1 text-left text-muted-foreground text-xl md:text-3xl font-normal" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                {typedText}
+                <span className="inline-block w-0.5 h-8 bg-accent ml-0.5 animate-pulse align-middle" />
+              </span>
+              <Send className="w-8 h-8 text-accent ml-4 shrink-0" />
+            </div>
+          ) : (
+            <div className="w-full max-w-3xl bg-white/95 backdrop-blur-sm rounded-2xl flex items-center px-8 py-6 shadow-2xl">
+              <Lock className="w-7 h-7 text-muted-foreground mr-4 shrink-0" />
+              <div className="text-left">
+                <p className="text-foreground text-xl md:text-2xl font-semibold" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                  Applications are now closed
+                </p>
+                <p className="text-muted-foreground text-sm md:text-base mt-1" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                  The application period for A.Y. 2026-2027 ended on June 27, 2026. Thank you to everyone who applied!
+                </p>
+              </div>
+            </div>
+          )}
 
           <p className="text-white/70 text-sm mt-6">
-            Join us for A.Y. 2026-2027
+            {isApplicationOpen() ? "Join us for A.Y. 2026-2027" : "Stay tuned for the next application cycle"}
           </p>
         </div>
 
